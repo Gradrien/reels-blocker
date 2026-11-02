@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Palette Eido (packages/ui-core gluestack config), mode clair. -->
+<resources>
+    <color name="bg">#FAF9F2</color>          <!-- background-900 -->
+    <color name="surface">#F1F0E7</color>     <!-- primary-800 -->
+    <color name="surface_high">#EAE6DC</color><!-- primary-700 -->
+    <color name="line">#E1DDCF</color>        <!-- primary-600 -->
+    <color name="ink">#3B352B</color>         <!-- primary-0 -->
+    <color name="ink_soft">#70614B</color>    <!-- primary-50 -->
+    <color name="ink_mute">#8C795E</color>    <!-- primary-100 -->
+    <color name="on_ink">#FAF9F2</color>
+    <color name="ok">#2A7948</color>          <!-- success-600 -->
+    <color name="warn">#B45A1A</color>        <!-- warning-700 -->
+    <color name="warn_bg">#FFF4EB</color>     <!-- background-warning -->
+    <color name="icon_bg">#FAF9F2</color>
+    <color name="icon_ink">#3B352B</color>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Reels Blocker</string>
+    <string name="service_label">Reels Blocker</string>
+    <string name="service_description">Fait un retour arrière quand le lecteur de Reels d\'Instagram s\'ouvre depuis le fil, l\'onglet Reels ou Explorer. Les Reels envoyés en message privé restent visibles. Rien n\'est collecté ni envoyé.</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp" android:height="32dp"
+    android:viewportWidth="62" android:viewportHeight="62">
+    <group android:translateX="-23" android:translateY="-23">
+        <!-- Triangle « play » aux coins arrondis -->
+        <path android:fillColor="@color/ink" android:strokeColor="@color/ink"
+            android:strokeWidth="8" android:strokeLineJoin="round"
+            android:pathData="M41,35 L41,73 L73.5,54 Z" />
+        <!-- Réserve autour de la barre -->
+        <path android:strokeColor="@color/bg" android:strokeWidth="15" android:strokeLineCap="round"
+            android:pathData="M31,77 L77,31" />
+        <!-- Barre aux bouts arrondis, comme les pales du moulinet d'Eido -->
+        <path android:strokeColor="@color/ink" android:strokeWidth="8" android:strokeLineCap="round"
+            android:pathData="M31,77 L77,31" />
+    </group>
+</vector>

@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T11:22:57.637412+00:00",
+  "title": "Design System: Reels Blocker",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Eido Cream",
+        "canonical": "#FAF9F2",
+        "eidoSource": "background-900",
+        "mode": "light",
+        "tonalRamp": [
+          "#0C0B07",
+          "#272721",
+          "#464540",
+          "#676660",
+          "#8A8983",
+          "#AFAEA8",
+          "#D2D1CA",
+          "#F0EFE8"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Linen",
+        "canonical": "#F1F0E7",
+        "eidoSource": "primary-800",
+        "mode": "light",
+        "tonalRamp": [
+          "#0C0B06",
+          "#282720",
+          "#46453E",
+          "#67665F",
+          "#8A8981",
+          "#AFAEA6",
+          "#D2D1C9",
+          "#F0EFE6"
+        ]
+      },
+      "surface-high": {
+        "role": "neutral",
+        "displayName": "Oat",
+        "canonical": "#EAE6DC",
+        "eidoSource": "primary-700",
+        "mode": "light",
+        "tonalRamp": [
+          "#0E0B05",
+          "#29261F",
+          "#48453D",
+          "#69665D",
+          "#8C8980",
+          "#B1AEA4",
+          "#D5D1C7",
+          "#F2EEE4"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Seam",
+        "canonical": "#E1DDCF",
+        "eidoSource": "primary-600",
+        "mode": "light",
+        "tonalRamp": [
+          "#0E0B03",
+          "#29261C",
+          "#484539",
+          "#6A665A",
+          "#8D897C",
+          "#B2AEA1",
+          "#D5D1C3",
+          "#F3EFE0"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Walnut Ink",
+        "canonical": "#3B352B",
+        "eidoSource": "primary-0",
+        "mode": "light",
+        "tonalRamp": [
+          "#0F0A04",
+          "#2B261C",
+          "#4A443A",
+          "#6C655A",
+          "#8F887D",
+          "#B4ADA1",
+          "#D7D0C3",
+          "#F5EDE1"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Umber",
+        "canonical": "#70614B",
+        "eidoSource": "primary-50",
+        "mode": "light",
+        "tonalRamp": [
+          "#140800",
+          "#312410",
+          "#51432D",
+          "#73644D",
+          "#968770",
+          "#BCAB93",
+          "#DFCEB6",
+          "#FDECD3"
+        ]
+      },
+      "ink-mute": {
+        "role": "neutral",
+        "displayName": "Faded Umber",
+        "canonical": "#8C795E",
+        "eidoSource": "primary-100",
+        "mode": "light",
+        "tonalRamp": [
+          "#160800",
+          "#33230A",
+          "#534228",
+          "#756349",
+          "#99866B",
+          "#BFAB8E",
+          "#E2CEB0",
+          "#FFEBCD"
+        ]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "On Ink",
+        "canonical": "#FAF9F2",
+        "eidoSource": "background-900",
+        "mode": "light",
+        "tonalRamp": [
+          "#0C0B07",
+          "#272721",
+          "#464540",
+          "#676660",
+          "#8A8983",
+          "#AFAEA8",
+          "#D2D1CA",
+          "#F0EFE8"
+        ]
+      },
+      "ok": {
+        "role": "tertiary",
+        "displayName": "Eido Green",
+        "canonical": "#2A7948",
+        "eidoSource": "success-600",
+        "mode": "light",
+        "tonalRamp": [
+          "#001500",
+          "#003406",
+          "#005526",
+          "#287847",
+          "#4F9C69",
+          "#75C28D",
+          "#98E6AF",
+          "#B5FFCC"
+        ]
+      },
+      "warn": {
+        "role": "tertiary",
+        "displayName": "Ember",
+        "canonical": "#B45A1A",
+        "eidoSource": "warning-700",
+        "mode": "light",
+        "tonalRamp": [
+          "#2B0000",
+          "#4F0400",
+          "#742B00",
+          "#9B4E19",
+          "#C27241",
+          "#EA9766",
+          "#FFBA88",
+          "#FFD7A4"
+        ]
+      },
+      "warn-bg": {
+        "role": "tertiary",
+        "displayName": "Peach Wash",
+        "canonical": "#FFF4EB",
+        "eidoSource": "background-warning",
+        "mode": "light",
+        "tonalRamp": [
+          "#100A05",
+          "#2D251E",
+          "#4C433C",
+          "#6D645C",
+          "#91877F",
+          "#B6ACA3",
+          "#D9CFC6",
+          "#F7ECE3"
+        ]
+      },
+      "bg-night": {
+        "role": "neutral",
+        "displayName": "Eido Cream (night)",
+        "canonical": "#121211",
+        "eidoSource": "background-950",
+        "mode": "night",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#262625",
+          "#454544",
+          "#666665",
+          "#898988",
+          "#AEAEAC",
+          "#D1D1CF",
+          "#EEEEED"
+        ]
+      },
+      "surface-night": {
+        "role": "neutral",
+        "displayName": "Linen (night)",
+        "canonical": "#1B1A17",
+        "eidoSource": "primary-900",
+        "mode": "night",
+        "tonalRamp": [
+          "#0C0B08",
+          "#272623",
+          "#464541",
+          "#676662",
+          "#8A8985",
+          "#AFAEAA",
+          "#D2D1CD",
+          "#F0EEEA"
+        ]
+      },
+      "surface-high-night": {
+        "role": "neutral",
+        "displayName": "Oat (night)",
+        "canonical": "#24231F",
+        "eidoSource": "primary-800",
+        "mode": "night",
+        "tonalRamp": [
+          "#0C0B08",
+          "#272622",
+          "#464541",
+          "#676661",
+          "#8A8984",
+          "#AFAEA9",
+          "#D2D1CC",
+          "#F0EEE9"
+        ]
+      },
+      "line-night": {
+        "role": "neutral",
+        "displayName": "Seam (night)",
+        "canonical": "#2D2B27",
+        "eidoSource": "primary-700",
+        "mode": "night",
+        "tonalRamp": [
+          "#0D0B08",
+          "#282622",
+          "#474540",
+          "#686661",
+          "#8B8984",
+          "#B0AEA9",
+          "#D3D1CB",
+          "#F1EEE9"
+        ]
+      },
+      "ink-night": {
+        "role": "primary",
+        "displayName": "Walnut Ink (night)",
+        "canonical": "#E6E2DB",
+        "eidoSource": "primary-0 (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#0D0B07",
+          "#292621",
+          "#48453F",
+          "#69665F",
+          "#8C8982",
+          "#B1ADA7",
+          "#D4D0C9",
+          "#F2EEE7"
+        ]
+      },
+      "ink-soft-night": {
+        "role": "neutral",
+        "displayName": "Umber (night)",
+        "canonical": "#BDB6AD",
+        "eidoSource": "primary-50 (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#0F0A05",
+          "#2B251E",
+          "#4A443C",
+          "#6B655D",
+          "#8F887F",
+          "#B4ADA4",
+          "#D7D0C7",
+          "#F5EDE4"
+        ]
+      },
+      "ink-mute-night": {
+        "role": "neutral",
+        "displayName": "Faded Umber (night)",
+        "canonical": "#928C84",
+        "eidoSource": "primary-100 (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#0F0A05",
+          "#2A261F",
+          "#49443D",
+          "#6B655E",
+          "#8E8880",
+          "#B3ADA5",
+          "#D6D0C7",
+          "#F4EDE5"
+        ]
+      },
+      "on-ink-night": {
+        "role": "neutral",
+        "displayName": "On Ink (night)",
+        "canonical": "#121211",
+        "eidoSource": "background-950",
+        "mode": "night",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#262625",
+          "#454544",
+          "#666665",
+          "#898988",
+          "#AEAEAC",
+          "#D1D1CF",
+          "#EEEEED"
+        ]
+      },
+      "ok-night": {
+        "role": "tertiary",
+        "displayName": "Eido Green (night)",
+        "canonical": "#84D3A2",
+        "eidoSource": "success (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#001500",
+          "#00340D",
+          "#00552C",
+          "#26784C",
+          "#4E9C6E",
+          "#73C292",
+          "#96E6B4",
+          "#B4FFD1"
+        ]
+      },
+      "warn-night": {
+        "role": "tertiary",
+        "displayName": "Ember (night)",
+        "canonical": "#FDAD74",
+        "eidoSource": "warning (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#2A0000",
+          "#4E0800",
+          "#722E00",
+          "#98500F",
+          "#BF743B",
+          "#E79960",
+          "#FFBC83",
+          "#FFDA9F"
+        ]
+      },
+      "warn-bg-night": {
+        "role": "tertiary",
+        "displayName": "Peach Wash (night)",
+        "canonical": "#2A2018",
+        "eidoSource": "background-warning (dark)",
+        "mode": "night",
+        "tonalRamp": [
+          "#120904",
+          "#2E241C",
+          "#4E433A",
+          "#70645A",
+          "#93867D",
+          "#B8ABA1",
+          "#DCCEC3",
+          "#FAECE1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Counter",
+        "purpose": "The blocked-Reels counter; one per screen."
+      },
+      "headline": {
+        "displayName": "App bar",
+        "purpose": "App title beside the mark."
+      },
+      "title": {
+        "displayName": "Card title",
+        "purpose": "Action card titles."
+      },
+      "title-row": {
+        "displayName": "Row title",
+        "purpose": "Setting, step, link and collapsible row titles."
+      },
+      "body-lead": {
+        "displayName": "Counter caption",
+        "purpose": "'Reels évités' under the counter."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Subtitles, log lines, explanations."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Section labels, status text, counter delta, pill text; sentence case."
+      },
+      "caption": {
+        "displayName": "Footer",
+        "purpose": "Privacy line with version."
+      },
+      "mono": {
+        "displayName": "Debug",
+        "purpose": "Debug dump in the Advanced section only."
+      }
+    },
+    "lineage": {
+      "source": "Eido",
+      "path": "Eido/packages/ui-core/components/gluestack-ui-provider/config.ts",
+      "font": "Outfit Regular/Medium/SemiBold, bundled in res/font"
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "counter-climb",
+        "value": "700ms DecelerateInterpolator(2f)",
+        "purpose": "Counter counts up from the last-seen value; honors system animator scale."
+      },
+      {
+        "name": "toggle",
+        "value": "160ms DecelerateInterpolator",
+        "purpose": "Toggle thumb grows 16 to 24dp and slides; track crossfades."
+      },
+      {
+        "name": "chevron",
+        "value": "200ms rotation 0 to 180deg",
+        "purpose": "Advanced section expand/collapse."
+      },
+      {
+        "name": "layout",
+        "value": "LayoutTransition (framework default)",
+        "purpose": "Cards and the Advanced body appear and disappear."
+      }
+    ],
+    "states": [
+      {
+        "name": "disabled-block",
+        "value": "alpha 0.45 + disabled",
+        "purpose": "Settings and log while the service is off."
+      },
+      {
+        "name": "ripple-row",
+        "value": "line color",
+        "purpose": "Row press feedback."
+      },
+      {
+        "name": "ripple-pill",
+        "value": "#33FFFFFF",
+        "purpose": "Pill press feedback."
+      }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Linen grouping card with 28dp corners; every section lives in one.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-title\">Activité récente</div><div class=\"ds-card-body\">14:32 Onglet Reels, retour à l'accueil</div></div>",
+      "css": ".ds-card{background:#F1F0E7;border-radius:28px;padding:20px 24px 24px;font-family: Outfit, sans-serif;color:#3B352B;max-width:360px}.ds-card-title{font-size:16px;font-weight:500}.ds-card-body{font-size:14px;color:#70614B;margin-top:4px}"
+    },
+    {
+      "name": "Pill Button",
+      "kind": "button",
+      "refersTo": "button-pill",
+      "description": "The only button style: ink pill, used for setup actions.",
+      "html": "<button class=\"ds-btn-pill\">Ouvrir</button>",
+      "css": ".ds-btn-pill{background:#3B352B;color:#FAF9F2;border:none;border-radius:20px;height:40px;min-width:88px;padding:0 18px;font-family: Outfit, sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}.ds-btn-pill:hover{background:#4a4337}.ds-btn-pill:active{background:#5a5243}.ds-btn-pill:focus-visible{outline:2px solid #70614B;outline-offset:2px}"
+    },
+    {
+      "name": "Toggle",
+      "kind": "custom",
+      "refersTo": "toggle-on",
+      "description": "Hand-drawn M3-style switch: Oat track with Umber outline off, Walnut track with cream thumb on; 160ms.",
+      "html": "<label class=\"ds-toggle\"><input type=\"checkbox\" checked><span></span></label>",
+      "css": ".ds-toggle{display:inline-block;position:relative;width:52px;height:32px}.ds-toggle input{opacity:0;width:0;height:0;position:absolute}.ds-toggle span{position:absolute;inset:0;background:#EAE6DC;border:2px solid #70614B;border-radius:16px;box-sizing:border-box;transition:background .16s ease-out,border-color .16s}.ds-toggle span:after{content:'';position:absolute;width:16px;height:16px;left:6px;top:6px;border-radius:50%;background:#70614B;transition:all .16s ease-out}.ds-toggle input:checked+span{background:#3B352B;border-color:#3B352B}.ds-toggle input:checked+span:after{width:24px;height:24px;left:24px;top:2px;background:#FAF9F2}.ds-toggle input:focus-visible+span{outline:2px solid #70614B;outline-offset:2px}"
+    },
+    {
+      "name": "Setting Row",
+      "kind": "custom",
+      "refersTo": "setting-row",
+      "description": "Title + subtitle with a trailing toggle; the whole row toggles.",
+      "html": "<div class=\"ds-row\"><div><div class=\"ds-row-t\">Bloquer les Reels</div><div class=\"ds-row-s\">Onglet Reels, fil d'actu et Explorer</div></div><span class=\"ds-row-sw\"></span></div>",
+      "css": ".ds-row{display:flex;align-items:center;gap:16px;min-height:76px;padding:12px 20px 12px 24px;background:#F1F0E7;border-radius:28px;font-family: Outfit, sans-serif;max-width:380px;box-sizing:border-box;cursor:pointer}.ds-row:hover{background:#EAE6DC}.ds-row>div{flex:1}.ds-row-t{font-size:16px;font-weight:500;color:#3B352B}.ds-row-s{font-size:14px;color:#70614B;margin-top:2px}.ds-row-sw{width:52px;height:32px;border-radius:16px;background:#3B352B;position:relative}.ds-row-sw:after{content:'';position:absolute;width:24px;height:24px;right:4px;top:4px;border-radius:50%;background:#FAF9F2}"
+    },
+    {
+      "name": "Status Line",
+      "kind": "chip",
+      "refersTo": "",
+      "description": "8dp state dot + Medium Umber label; the only place green/orange appears.",
+      "html": "<div class=\"ds-status\"><i></i>Protection active</div>",
+      "css": ".ds-status{display:flex;align-items:center;gap:8px;font-family: Outfit, sans-serif;font-size:14px;font-weight:500;color:#70614B}.ds-status i{width:8px;height:8px;border-radius:50%;background:#2A7948}"
+    },
+    {
+      "name": "Hero Counter",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Signature: status line, 72sp tabular counter climbing from the last-seen value over 700ms, caption and delta.",
+      "html": "<div class=\"ds-hero\"><div class=\"ds-hero-st\"><i></i>Protection active</div><div class=\"ds-hero-n\">42</div><div class=\"ds-hero-c\">Reels évités</div><div class=\"ds-hero-d\">+3 depuis ta dernière visite</div></div>",
+      "css": ".ds-hero{background:#F1F0E7;border-radius:28px;padding:20px 24px 24px;font-family: Outfit, sans-serif;max-width:360px}.ds-hero-st{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:#70614B}.ds-hero-st i{width:8px;height:8px;border-radius:50%;background:#2A7948}.ds-hero-n{font-size:72px;font-weight:600;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:#3B352B;line-height:1;margin-top:20px}.ds-hero-c{font-size:16px;color:#70614B;margin-top:4px}.ds-hero-d{font-size:14px;font-weight:500;color:#70614B;margin-top:12px}"
+    },
+    {
+      "name": "Setup Card",
+      "kind": "card",
+      "refersTo": "card-setup",
+      "description": "Peach Wash card that leads the screen when the service is off: numbered ink badges and pill actions.",
+      "html": "<div class=\"ds-setup\"><div class=\"ds-setup-t\">Active la protection</div><div class=\"ds-setup-s\">Deux réglages Android, à faire une seule fois.</div><div class=\"ds-step\"><b>1</b><div><div class=\"ds-setup-rt\">Accessibilité</div><div class=\"ds-setup-s\">Active « Reels Blocker » dans la liste</div></div><button>Ouvrir</button></div></div>",
+      "css": ".ds-setup{background:#FFF4EB;border-radius:28px;padding:20px 24px 12px;font-family: Outfit, sans-serif;max-width:380px;box-sizing:border-box}.ds-setup-t{font-size:18px;font-weight:500;color:#3B352B}.ds-setup-rt{font-size:16px;font-weight:500;color:#3B352B}.ds-setup-s{font-size:14px;color:#70614B;margin-top:2px}.ds-step{display:flex;align-items:center;min-height:72px;gap:14px}.ds-step>div{flex:1}.ds-step b{width:28px;height:28px;border-radius:50%;background:#3B352B;color:#FAF9F2;display:grid;place-items:center;font-size:14px;font-weight:600}.ds-step button{background:#3B352B;color:#FAF9F2;border:none;border-radius:20px;height:40px;min-width:88px;padding:0 18px;font:inherit;font-size:14px;font-weight:500}.ds-step button:hover{background:#4a4337}.ds-step button:focus-visible{outline:2px solid #70614B;outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Ledger",
+    "overview": "A single control screen that reads like a well-kept notebook page in Eido's language: warm cream paper, brown ink, one big number. The palette, the Outfit typeface and the 28dp card silhouette are inherited from the author's other app, Eido (palette source: `Eido/packages/ui-core/components/gluestack-ui-provider/config.ts`, light and dark modes); each Android color resource carries a comment naming the Eido scale step it came from (e.g. `bg` = background-900, `ink` = primary-0). New surfaces should keep that lineage rather than drift toward Material defaults.\n\nThe screen is flat and tonal. Content sits on cream, grouped into soft-cornered surface cards; hierarchy comes from size and ink weight, not from color or depth. Color carries meaning only for state: green when protection runs, orange when it is cut, with the setup card tinting warm when action is needed. Everything else is a brown-on-cream ramp. The voice is French, sentence case, short.\n\nDensity is relaxed: generous 24dp card insets, 64-76dp row heights, 32dp breathing room above section labels. The one moment of motion that carries meaning is the counter climbing from the last-seen value.",
+    "keyCharacteristics": [
+      "Eido lineage: cream paper, brown ink, Outfit, 28dp cards.",
+      "Flat tonal layering; no shadows anywhere.",
+      "One display number per screen, tabular figures.",
+      "Green/orange reserved for state.",
+      "Full light and dark parity through `values` / `values-night` resources."
+    ],
+    "rules": [
+      {
+        "name": "The State-Only Color Rule",
+        "body": "Green and orange appear only as status signals (an 8dp dot, the setup card wash). Never as decoration, buttons, or links.",
+        "section": "colors"
+      },
+      {
+        "name": "The Eido Provenance Rule",
+        "body": "Every color is a named step of Eido's gluestack palette; add new colors by taking the next Eido step, with a comment naming it, never by inventing a hex.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "No uppercase, no letterspaced labels. Section labels are plain sentence-case 14sp Medium in Umber.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Number Rule",
+        "body": "Any changing number (counter, timestamps) uses `tnum` so values do not jitter as they animate or align.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper-Flat Rule",
+        "body": "Surfaces separate by tone, never by shadow. If a new layer is needed, take the next Eido step.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take every new color from Eido's palette and note the step it maps to, in both `values` and `values-night`.",
+      "**Do** group content in Linen cards with 28dp corners and 24dp insets.",
+      "**Do** keep one 72sp tabular number as the screen's focal point.",
+      "**Do** keep touch targets at 48dp minimum even when the visual control is smaller.",
+      "**Do** dim and disable (45%) content that cannot work yet, and lead with the card that fixes it."
+    ],
+    "donts": [
+      "**Don't** add shadows or elevation; separate layers by tone.",
+      "**Don't** use green or orange outside status signals.",
+      "**Don't** use uppercase or tracked-out labels.",
+      "**Don't** reach for the purple wellbeing look or progress rings; this is a calm control screen, not a wellness tracker.",
+      "**Don't** introduce a second typeface for display; Outfit carries all roles."
+    ]
+  }
+}

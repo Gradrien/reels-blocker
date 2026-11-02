@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Palette Eido, mode sombre. -->
+<resources>
+    <color name="bg">#121211</color>          <!-- background-950 -->
+    <color name="surface">#1B1A17</color>     <!-- primary-900 -->
+    <color name="surface_high">#24231F</color><!-- primary-800 -->
+    <color name="line">#2D2B27</color>        <!-- primary-700 -->
+    <color name="ink">#E6E2DB</color>         <!-- primary-0 -->
+    <color name="ink_soft">#BDB6AD</color>    <!-- primary-50 -->
+    <color name="ink_mute">#928C84</color>    <!-- primary-100 -->
+    <color name="on_ink">#121211</color>
+    <color name="ok">#84D3A2</color>
+    <color name="warn">#FDAD74</color>
+    <color name="warn_bg">#2A2018</color>
+</resources>

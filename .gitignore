@@ -1,0 +1,9 @@
+.gradle/
+build/
+local.properties
+*.apk
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/build/
+.DS_Store
+.kotlin/
