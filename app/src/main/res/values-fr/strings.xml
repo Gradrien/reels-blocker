@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_description">Fait un retour arrière quand le lecteur de Reels d\'Instagram s\'ouvre depuis le fil, l\'onglet Reels ou Explorer. Les Reels envoyés en message privé restent visibles. Rien n\'est collecté ni envoyé.</string>
+
+    <string name="status_active">Protection active</string>
+    <string name="status_paused">En pause</string>
+    <string name="status_off">Protection coupée</string>
+
+    <string name="counter_label">Reels évités</string>
+    <string name="counter_delta">+%1$d depuis ta dernière visite</string>
+
+    <string name="setup_title">Active la protection</string>
+    <string name="setup_subtitle">Deux réglages Android, à faire une seule fois.</string>
+    <string name="setup_step_accessibility_title">Accessibilité</string>
+    <string name="setup_step_accessibility_subtitle">Active « Reels Blocker » dans la liste</string>
+    <string name="setup_step_battery_title">Autonomie (Xiaomi)</string>
+    <string name="setup_step_battery_subtitle">Démarrage auto + batterie « Aucune restriction »</string>
+    <string name="action_open">Ouvrir</string>
+
+    <string name="section_blocking">Blocage</string>
+    <string name="setting_block_reels_title">Bloquer les Reels</string>
+    <string name="setting_block_reels_subtitle">Onglet Reels, fil d\'actu et Explorer</string>
+    <string name="setting_block_dm_swipe_title">Bloquer le swipe depuis un DM</string>
+    <string name="setting_block_dm_swipe_subtitle">Le Reel envoyé par un ami reste visible</string>
+
+    <string name="section_activity">Activité récente</string>
+    <string name="log_empty">Rien pour l\'instant. Chaque Reel bloqué apparaîtra ici.</string>
+    <string name="log_yesterday">hier</string>
+    <string name="log_dm_reel_allowed">Reel envoyé par un ami, laissé ouvert</string>
+    <string name="log_feed_reel_closed">Reel du fil, fermé</string>
+    <string name="log_dm_swipe_closed">Swipe après un Reel d\'ami, fermé</string>
+    <string name="log_reels_tab_home">Onglet Reels, retour à l\'accueil</string>
+    <string name="log_reels_tab_failed">Onglet Reels : accueil introuvable, rien fait</string>
+    <string name="log_loop_pause">Trop de blocages d\'affilée, pause d\'une minute</string>
+
+    <string name="advanced">Avancé</string>
+    <string name="advanced_toggle_description">Avancé, afficher ou masquer</string>
+    <string name="link_accessibility_title">Accessibilité</string>
+    <string name="link_accessibility_subtitle">Activer ou couper le service</string>
+    <string name="link_app_settings_title">Réglages de l\'app</string>
+    <string name="link_app_settings_subtitle">Démarrage auto, batterie, paramètres restreints</string>
+    <string name="setting_debug_title">Mode diagnostic</string>
+    <string name="setting_debug_subtitle">Relève ce que l\'app voit dans Instagram</string>
+    <string name="action_copy_report">Copier le relevé</string>
+    <string name="report_copied">Relevé copié</string>
+
+    <string name="footer">Rien ne quitte ton téléphone · v%1$s</string>
+</resources>

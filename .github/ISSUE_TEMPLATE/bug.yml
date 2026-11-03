@@ -1,0 +1,21 @@
+name: Bug report
+description: Something else is wrong (setup, display, crash).
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Steps to reproduce, what you expected, what you saw. Screenshots welcome.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Reels Blocker version
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Phone and Android version

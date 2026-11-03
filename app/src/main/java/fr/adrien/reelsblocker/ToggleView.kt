@@ -12,15 +12,15 @@ import android.widget.Checkable
 import android.widget.Switch
 
 /**
- * Interrupteur façon Material 3 (piste 52×32 dp, pouce 24 dp allumé / 16 dp cerclé éteint),
- * dessiné à la main : le Switch du framework ignore les tailles de ses drawables à l'état éteint.
- * Annoncé comme un Switch standard par TalkBack.
+ * Material 3 style switch (52×32dp track, 24dp thumb when on / 16dp outlined when off),
+ * drawn by hand because the framework Switch ignores its drawable sizes in the off state.
+ * Announced to TalkBack as a standard Switch.
  */
 class ToggleView(context: Context) : View(context), Checkable {
 
     var onChange: ((Boolean) -> Unit)? = null
     private var checked = false
-    private var progress = 0f // 0 = éteint, 1 = allumé
+    private var progress = 0f // 0 = off, 1 = on
     private var anim: ValueAnimator? = null
 
     private val d = resources.displayMetrics.density
@@ -36,7 +36,7 @@ class ToggleView(context: Context) : View(context), Checkable {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) =
-        setMeasuredDimension((52 * d).toInt(), (48 * d).toInt()) // 48 dp de haut : cible tactile
+        setMeasuredDimension((52 * d).toInt(), (48 * d).toInt()) // 48dp tall: touch target
 
     override fun onDraw(canvas: Canvas) {
         val top = (height - 32 * d) / 2

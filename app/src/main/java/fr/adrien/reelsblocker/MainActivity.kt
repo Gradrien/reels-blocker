@@ -31,18 +31,18 @@ import android.widget.TextView
 import android.widget.Toast
 
 /**
- * Écran unique, construit en code (aucune dépendance).
- * Direction artistique reprise d'Eido : crème / brun, Outfit, cartes très arrondies.
+ * The app's single screen, built in code (no dependencies, no XML layouts).
+ * Visual tokens come from resources (colors, fonts); copy comes from strings.xml.
  */
 class MainActivity : Activity() {
 
-    // ── typo & couleurs ──
+    // ── type & colors ──
     private val regular by lazy { resources.getFont(R.font.outfit_regular) }
     private val medium by lazy { resources.getFont(R.font.outfit_medium) }
     private val semibold by lazy { resources.getFont(R.font.outfit_semibold) }
     private fun c(id: Int) = getColor(id)
 
-    // ── vues mises à jour à chaque refresh ──
+    // ── views updated on every refresh ──
     private lateinit var statusDot: View
     private lateinit var statusText: TextView
     private lateinit var counter: TextView
@@ -70,13 +70,13 @@ class MainActivity : Activity() {
         }
 
         col.addView(header())
-        // Service coupé : l'activation passe avant tout le reste.
+        // When the service is off, the setup card comes before everything else.
         setupCard = setupCard().also { col.addView(it, lp(top = 8)) }
         heroCard = heroCard().also { col.addView(it, lp(top = 8)) }
 
         settingsBlock = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(sectionLabel("Blocage"))
+            addView(sectionLabel(getString(R.string.section_blocking)))
             addView(settingsCard())
         }
         col.addView(settingsBlock)
@@ -88,14 +88,14 @@ class MainActivity : Activity() {
         }
         logBlock = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(sectionLabel("Activité récente"))
+            addView(sectionLabel(getString(R.string.section_activity)))
             addView(logList)
         }
         col.addView(logBlock)
 
         col.addView(advancedCard(), lp(top = 32))
 
-        col.addView(text("Rien ne quitte ton téléphone · v${appVersion()}", 13f, regular, R.color.ink_soft).apply {
+        col.addView(text(getString(R.string.footer, appVersion()), 13f, regular, R.color.ink_soft).apply {
             gravity = Gravity.CENTER
             setPadding(0, dp(24), 0, 0)
         })
@@ -106,7 +106,7 @@ class MainActivity : Activity() {
             clipToPadding = false
             addView(col)
         }
-        // Voile de la couleur du fond sous la barre d'état : le contenu défile dessous sans s'y superposer.
+        // Background-colored scrim under the status bar: content scrolls beneath it instead of overlapping it.
         val scrim = View(this).apply { setBackgroundColor(c(R.color.bg)) }
         val root = FrameLayout(this).apply {
             addView(scroll)
@@ -114,7 +114,7 @@ class MainActivity : Activity() {
         }
         root.setOnApplyWindowInsetsListener { _, insets ->
             val (l, t, r, b) = systemBars(insets).toList()
-            // Les insets vont sur la colonne : le contenu passe sous la barre de gestes au lieu d'y être coupé.
+            // Insets go on the column, so content scrolls under the gesture bar instead of being clipped by it.
             col.setPadding(dp(16) + l, t, dp(16) + r, dp(24) + b)
             scrim.layoutParams = scrim.layoutParams.apply { height = t }
             insets
@@ -134,7 +134,7 @@ class MainActivity : Activity() {
         setPadding(dp(8), dp(16), dp(8), dp(8))
         minimumHeight = dp(64)
         addView(ImageView(context).apply { setImageResource(R.drawable.ic_mark) }, LinearLayout.LayoutParams(dp(32), dp(32)))
-        addView(text("Reels Blocker", 22f, medium, R.color.ink).apply { setPadding(dp(12), 0, 0, 0) })
+        addView(text(getString(R.string.app_name), 22f, medium, R.color.ink).apply { setPadding(dp(12), 0, 0, 0) })
     }
 
     private fun heroCard() = LinearLayout(this).apply {
@@ -155,7 +155,7 @@ class MainActivity : Activity() {
             setPadding(0, dp(20), 0, 0)
         }
         addView(counter)
-        addView(text("Reels évités", 16f, regular, R.color.ink_soft).apply { setPadding(0, dp(4), 0, 0) })
+        addView(text(getString(R.string.counter_label), 16f, regular, R.color.ink_soft).apply { setPadding(0, dp(4), 0, 0) })
         counterDelta = text("", 14f, medium, R.color.ink_soft).apply { setPadding(0, dp(12), 0, 0) }
         addView(counterDelta)
     }
@@ -164,14 +164,14 @@ class MainActivity : Activity() {
         orientation = LinearLayout.VERTICAL
         background = rounded(c(R.color.warn_bg), 28)
         setPadding(dp(24), dp(20), dp(24), dp(12))
-        addView(text("Active la protection", 18f, medium, R.color.ink))
-        addView(text("Deux réglages Android, à faire une seule fois.", 14f, regular, R.color.ink_soft).apply {
+        addView(text(getString(R.string.setup_title), 18f, medium, R.color.ink))
+        addView(text(getString(R.string.setup_subtitle), 14f, regular, R.color.ink_soft).apply {
             setPadding(0, dp(4), 0, dp(8))
         })
-        addView(stepRow("1", "Accessibilité", "Active « Reels Blocker » dans la liste") {
+        addView(stepRow("1", getString(R.string.setup_step_accessibility_title), getString(R.string.setup_step_accessibility_subtitle)) {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         })
-        addView(stepRow("2", "Autonomie (Xiaomi)", "Démarrage auto + batterie « Aucune restriction »") {
+        addView(stepRow("2", getString(R.string.setup_step_battery_title), getString(R.string.setup_step_battery_subtitle)) {
             openAppSettings()
         })
     }
@@ -179,11 +179,11 @@ class MainActivity : Activity() {
     private fun settingsCard() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
         background = card()
-        blockSwitch = switchRow(this, "Bloquer les Reels", "Onglet Reels, fil d'actu et Explorer", Prefs.enabled(context)) {
+        blockSwitch = switchRow(this, getString(R.string.setting_block_reels_title), getString(R.string.setting_block_reels_subtitle), Prefs.enabled(context)) {
             Prefs.setEnabled(context, it); refresh()
         }
         addView(divider())
-        switchRow(this, "Bloquer le swipe depuis un DM", "Le Reel envoyé par un ami reste visible", Prefs.blockDmSwipe(context)) {
+        switchRow(this, getString(R.string.setting_block_dm_swipe_title), getString(R.string.setting_block_dm_swipe_subtitle), Prefs.blockDmSwipe(context)) {
             Prefs.setBlockDmSwipe(context, it)
         }
     }
@@ -197,11 +197,11 @@ class MainActivity : Activity() {
             minimumHeight = dp(64)
             setPadding(dp(24), 0, dp(20), 0)
             background = ripple(28)
-            addView(text("Avancé", 16f, medium, R.color.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            addView(text(getString(R.string.advanced), 16f, medium, R.color.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             advancedChevron = ImageView(context).apply { setImageResource(R.drawable.ic_chevron) }
             addView(advancedChevron, LinearLayout.LayoutParams(dp(24), dp(24)))
             setOnClickListener { toggleAdvanced() }
-            contentDescription = "Avancé, afficher ou masquer"
+            contentDescription = getString(R.string.advanced_toggle_description)
         }
         addView(head)
 
@@ -210,23 +210,23 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
             addView(divider())
-            addView(linkRow("Accessibilité", "Activer ou couper le service") {
+            addView(linkRow(getString(R.string.link_accessibility_title), getString(R.string.link_accessibility_subtitle)) {
                 startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             })
             addView(divider())
-            addView(linkRow("Réglages de l'app", "Démarrage auto, batterie, paramètres restreints") { openAppSettings() })
+            addView(linkRow(getString(R.string.link_app_settings_title), getString(R.string.link_app_settings_subtitle)) { openAppSettings() })
             addView(divider())
-            switchRow(this, "Mode diagnostic", "Relève ce que l'app voit dans Instagram", Prefs.debug(context)) {
+            switchRow(this, getString(R.string.setting_debug_title), getString(R.string.setting_debug_subtitle), Prefs.debug(context)) {
                 Prefs.setDebug(context, it); refresh()
             }
             debugBlock = LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(dp(16), 0, dp(16), dp(16))
-                addView(pillButton("Copier le relevé") {
+                addView(pillButton(getString(R.string.action_copy_report)) {
                     getSystemService(ClipboardManager::class.java)
                         .setPrimaryClip(ClipData.newPlainText("reels-blocker", debugText.text))
-                    // Android 13+ affiche déjà sa propre confirmation de copie.
-                    if (Build.VERSION.SDK_INT < 33) Toast.makeText(context, "Relevé copié", Toast.LENGTH_SHORT).show()
+                    // Android 13+ already shows its own copy confirmation.
+                    if (Build.VERSION.SDK_INT < 33) Toast.makeText(context, R.string.report_copied, Toast.LENGTH_SHORT).show()
                 }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     leftMargin = dp(8); bottomMargin = dp(12)
                 })
@@ -242,21 +242,21 @@ class MainActivity : Activity() {
         addView(advancedBody)
     }
 
-    // ────────────────────────────── état ──────────────────────────────
+    // ────────────────────────────── state ──────────────────────────────
 
     private fun refresh() {
         val service = isServiceEnabled()
         val on = Prefs.enabled(this)
         val (label, color) = when {
-            !service -> "Protection coupée" to R.color.warn
-            !on -> "En pause" to R.color.ink_mute
-            else -> "Protection active" to R.color.ok
+            !service -> R.string.status_off to R.color.warn
+            !on -> R.string.status_paused to R.color.ink_mute
+            else -> R.string.status_active to R.color.ok
         }
-        statusText.text = label
+        statusText.setText(label)
         statusDot.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(c(color)) }
 
         setupCard.visibility = if (service) View.GONE else View.VISIBLE
-        // Tant que le service est coupé, seule l'activation compte : le reste s'efface et devient inactif.
+        // While the service is off, only setup matters: everything else fades and is disabled.
         listOf(settingsBlock, logBlock).forEach { setEnabledDeep(it, service); it.alpha = if (service) 1f else 0.45f }
         blockSwitch.isChecked = on
 
@@ -268,11 +268,11 @@ class MainActivity : Activity() {
         if (Prefs.debug(this)) debugText.text = debugDump()
     }
 
-    /** Signature : le compteur monte depuis la valeur vue à la dernière visite. */
+    /** Signature moment: the counter climbs from the value seen on the last visit. */
     private fun animateCounter(count: Int) {
         val lastSeen = Prefs.lastSeenCount(this)
         val delta = count - lastSeen
-        counterDelta.text = if (delta > 0) "+$delta depuis ta dernière visite" else ""
+        counterDelta.text = if (delta > 0) getString(R.string.counter_delta, delta) else ""
         counterDelta.visibility = if (delta > 0) View.VISIBLE else View.GONE
         Prefs.setLastSeenCount(this, count)
 
@@ -291,13 +291,13 @@ class MainActivity : Activity() {
         logList.removeAllViews()
         val entries = Prefs.log(this).lines().filter { it.isNotBlank() }.take(6)
         if (entries.isEmpty()) {
-            logList.addView(text("Rien pour l'instant. Chaque Reel bloqué apparaîtra ici.", 14f, regular, R.color.ink_soft).apply {
+            logList.addView(text(getString(R.string.log_empty), 14f, regular, R.color.ink_soft).apply {
                 setPadding(dp(24), dp(12), dp(24), dp(12))
             })
             return
         }
         val stamps = entries.map(::logStamp)
-        // Colonne horaire alignée : largeur de l'étiquette la plus large, mesurée à la taille de police réelle.
+        // Aligned time column: width of the widest label, measured at the actual font size.
         val probe = text("", 14f, regular, R.color.ink_soft).paint
         val column = stamps.maxOf { probe.measureText(it.first) }.toInt() + dp(16)
         stamps.forEach { (time, msg) ->
@@ -311,7 +311,7 @@ class MainActivity : Activity() {
         }
     }
 
-    /** « 2026-11-02 14:32 msg » -> heure si aujourd'hui, « hier » ou la date sinon. Ancien format « 14:32:10 msg » accepté. */
+    /** "2026-11-02 14:32 msg" -> time if today, "yesterday", or the date otherwise. Legacy "14:32:10 msg" lines are accepted. */
     private fun logStamp(line: String): Pair<String, String> {
         val first = line.substringBefore(' ')
         if (first.contains(':')) return first.take(5) to line.substringAfter(' ')
@@ -322,19 +322,20 @@ class MainActivity : Activity() {
         val today = java.time.LocalDate.now()
         val label = when (date) {
             today -> time
-            today.minusDays(1) -> "hier"
-            else -> date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM", java.util.Locale.FRANCE))
+            today.minusDays(1) -> getString(R.string.log_yesterday)
+            else -> date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM", java.util.Locale.getDefault()))
         }
         return label to msg
     }
 
     private fun debugDump(): String {
-        val diag = "Service démarré : " + Prefs.diag(this, "connected").ifBlank { "jamais" } + "\n" +
-            "Événements : " + Prefs.diag(this, "events").ifBlank { "aucun" } + "\n" +
-            "Lecture écran : " + Prefs.diag(this, "root").ifBlank { "jamais tentée" }
-        val screens = ReelsBlockerService.Screen.entries.map { it.name } + "SANS_ID"
+        // Diagnostic report stays in English on purpose: it is pasted into GitHub issues.
+        val diag = "Service started: " + Prefs.diag(this, "connected").ifBlank { "never" } + "\n" +
+            "Events: " + Prefs.diag(this, "events").ifBlank { "none" } + "\n" +
+            "Screen read: " + Prefs.diag(this, "root").ifBlank { "never attempted" }
+        val screens = ReelsBlockerService.Screen.entries.map { it.name } + ReelsBlockerService.NO_ID
         return diag + "\n\n" + screens.joinToString("\n\n") { s ->
-            "── $s ──\n" + Prefs.debugDump(this, s).ifBlank { "(pas encore vu)" }
+            "── $s ──\n" + Prefs.debugDump(this, s).ifBlank { "(not seen yet)" }
         }
     }
 
@@ -349,7 +350,7 @@ class MainActivity : Activity() {
         advancedChevron.animate().rotation(if (open) 180f else 0f).setDuration(200).start()
     }
 
-    // ────────────────────────────── composants ──────────────────────────────
+    // ────────────────────────────── components ──────────────────────────────
 
     private fun sectionLabel(t: String) = text(t, 14f, medium, R.color.ink_soft).apply {
         setPadding(dp(24), dp(32), dp(24), dp(10))
@@ -394,7 +395,7 @@ class MainActivity : Activity() {
         }, LinearLayout.LayoutParams(dp(28), dp(28)))
         addView(titleSub(title, sub).apply { setPadding(dp(14), 0, dp(12), 0) },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        addView(pillButton("Ouvrir", onClick))
+        addView(pillButton(getString(R.string.action_open), onClick))
     }
 
     private fun titleSub(title: String, sub: String) = LinearLayout(this).apply {
@@ -412,7 +413,7 @@ class MainActivity : Activity() {
         isClickable = true
         setOnClickListener { onClick() }
     }.let { btn ->
-        // cible tactile de 48 dp autour d'un bouton visuel de 40 dp
+        // 48dp touch target around a 40dp visual button
         FrameLayout(this).apply {
             setPadding(0, dp(4), 0, dp(4))
             addView(btn)
@@ -444,7 +445,7 @@ class MainActivity : Activity() {
     private fun ripple(radiusDp: Int): Drawable =
         RippleDrawable(ColorStateList.valueOf(c(R.color.line)), null, rounded(0xFF000000.toInt(), radiusDp))
 
-    // ── système ──
+    // ── system ──
     private fun goEdgeToEdge() {
         window.setBackgroundDrawable(ColorDrawable(c(R.color.bg)))
         if (Build.VERSION.SDK_INT >= 30) {
@@ -473,7 +474,7 @@ class MainActivity : Activity() {
     private fun isServiceEnabled(): Boolean {
         val me = ComponentName(this, ReelsBlockerService::class.java)
         val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
-        // Android stocke la forme longue ou courte (« pkg/.Classe ») selon les versions : on compare les composants.
+        // Android stores either the long or short form ("pkg/.Class") depending on the version: compare components.
         return enabled.split(':').any { ComponentName.unflattenFromString(it) == me }
     }
 

@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Reels Blocker</string>
-    <string name="service_label">Reels Blocker</string>
-    <string name="service_description">Fait un retour arrière quand le lecteur de Reels d\'Instagram s\'ouvre depuis le fil, l\'onglet Reels ou Explorer. Les Reels envoyés en message privé restent visibles. Rien n\'est collecté ni envoyé.</string>
+    <string name="app_name" translatable="false">Reels Blocker</string>
+    <string name="service_label" translatable="false">Reels Blocker</string>
+    <string name="service_description">Goes back when Instagram\'s Reels player opens from the feed, the Reels tab or Explore. Reels sent to you in a direct message stay visible. Nothing is collected or sent anywhere.</string>
+
+    <!-- Status -->
+    <string name="status_active">Protection on</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_off">Protection off</string>
+
+    <!-- Counter -->
+    <string name="counter_label">Reels avoided</string>
+    <string name="counter_delta">+%1$d since your last visit</string>
+
+    <!-- Setup -->
+    <string name="setup_title">Turn on protection</string>
+    <string name="setup_subtitle">Two Android settings, one time only.</string>
+    <string name="setup_step_accessibility_title">Accessibility</string>
+    <string name="setup_step_accessibility_subtitle">Turn on “Reels Blocker” in the list</string>
+    <string name="setup_step_battery_title">Battery (Xiaomi)</string>
+    <string name="setup_step_battery_subtitle">Autostart + battery set to “No restrictions”</string>
+    <string name="action_open">Open</string>
+
+    <!-- Settings -->
+    <string name="section_blocking">Blocking</string>
+    <string name="setting_block_reels_title">Block Reels</string>
+    <string name="setting_block_reels_subtitle">Reels tab, feed and Explore</string>
+    <string name="setting_block_dm_swipe_title">Block swiping from a DM</string>
+    <string name="setting_block_dm_swipe_subtitle">The Reel a friend sent stays visible</string>
+
+    <!-- Activity log -->
+    <string name="section_activity">Recent activity</string>
+    <string name="log_empty">Nothing yet. Every blocked Reel will show up here.</string>
+    <string name="log_yesterday">yesterday</string>
+    <string name="log_dm_reel_allowed">Reel sent by a friend, left open</string>
+    <string name="log_feed_reel_closed">Reel from the feed, closed</string>
+    <string name="log_dm_swipe_closed">Swipe after a friend\'s Reel, closed</string>
+    <string name="log_reels_tab_home">Reels tab, back to Home</string>
+    <string name="log_reels_tab_failed">Reels tab: Home not found, nothing done</string>
+    <string name="log_loop_pause">Too many blocks in a row, paused for a minute</string>
+
+    <!-- Advanced -->
+    <string name="advanced">Advanced</string>
+    <string name="advanced_toggle_description">Advanced, show or hide</string>
+    <string name="link_accessibility_title">Accessibility</string>
+    <string name="link_accessibility_subtitle">Turn the service on or off</string>
+    <string name="link_app_settings_title">App settings</string>
+    <string name="link_app_settings_subtitle">Autostart, battery, restricted settings</string>
+    <string name="setting_debug_title">Diagnostic mode</string>
+    <string name="setting_debug_subtitle">Records what the app sees in Instagram</string>
+    <string name="action_copy_report">Copy report</string>
+    <string name="report_copied">Report copied</string>
+
+    <!-- Footer -->
+    <string name="footer">Nothing leaves your phone · v%1$s</string>
 </resources>

@@ -19,7 +19,7 @@ object Prefs {
     fun debugDump(c: Context, screen: String) = sp(c).getString("dump_$screen", "") ?: ""
     fun saveDebug(c: Context, screen: String, v: String) = sp(c).edit().putString("dump_$screen", v).apply()
 
-    /** Journal des 15 dernières décisions, le plus récent en premier. */
+    /** Log of the last 15 decisions, newest first. */
     fun log(c: Context) = sp(c).getString("log", "") ?: ""
     fun appendLog(c: Context, line: String) {
         val lines = (listOf(line) + log(c).lines().filter { it.isNotBlank() }).take(15)
