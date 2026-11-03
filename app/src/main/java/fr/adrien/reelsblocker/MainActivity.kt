@@ -143,7 +143,7 @@ class MainActivity : Activity() {
         }, LinearLayout.LayoutParams(dp(30), dp(30)))
         addView(text(getString(R.string.app_name), 22f, bold, R.color.ink).apply {
             setPadding(dp(10), 0, 0, 0)
-            accessibilityHeading = true
+            isAccessibilityHeading = true
         })
     }
 
@@ -189,7 +189,7 @@ class MainActivity : Activity() {
         orientation = LinearLayout.VERTICAL
         background = rounded(c(R.color.warn_bg), RADIUS_CARD)
         setPadding(dp(GUTTER), dp(16), dp(GUTTER), dp(8))
-        addView(text(getString(R.string.setup_title), 17f, bold, R.color.ink).apply { accessibilityHeading = true })
+        addView(text(getString(R.string.setup_title), 17f, bold, R.color.ink).apply { isAccessibilityHeading = true })
         addView(text(getString(R.string.setup_subtitle), 14f, regular, R.color.ink_soft).apply {
             setPadding(0, dp(4), 0, dp(8))
         })
@@ -378,7 +378,7 @@ class MainActivity : Activity() {
 
     private fun sectionTitle(t: String) = text(t, 16f, bold, R.color.ink).apply {
         setPadding(dp(GUTTER), dp(20), dp(GUTTER), dp(8))
-        accessibilityHeading = true
+        isAccessibilityHeading = true
     }
 
     /** Full-bleed hairline between sections. */
