@@ -29,7 +29,7 @@ A tiny, open-source, no-network alternative to ad-supported blockers like NoScro
 
 ## Brand Commitments
 - Name: "Reels Blocker" (confirmed by user).
-- Current launcher icon is a placeholder system drawable; user explicitly rejected it — needs a real icon.
+- Launcher icon: original "play glyph struck through" in white on the Ember-to-Raspberry gradient. Never reuse Instagram's logo, glyphs or exact gradient.
 
 ## Evidence on Hand
 - Blocked-count and decision log are real, local-only data. No users, testimonials, or stats to cite beyond that.

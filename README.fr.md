@@ -56,5 +56,5 @@ Il faut le JDK 17 et le SDK Android (Android Studio n'est pas nécessaire).
 
 ## Licence
 
-Code sous licence MIT. Police [Outfit](https://github.com/Outfitio/Outfit-Fonts) sous licence SIL OFL 1.1.
+Code sous licence MIT.
 Projet indépendant, sans lien avec Instagram ou Meta.

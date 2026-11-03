@@ -12,6 +12,9 @@ All notable changes to this project are documented here. The format follows [Kee
 - Release signing from environment variables or an untracked `keystore.properties`.
 
 ### Changed
+- New design system: Instagram-like language (white/true black, hairlines, compact rows, bold titles, blue primary action) with an original Ember-to-Raspberry gradient on the brand tile and the counter. See DESIGN.md.
+- New launcher icon and in-app brand tile.
+- System font instead of the bundled Outfit typeface (smaller APK).
 - Code comments and the diagnostic report are in English.
 - `build.sh` runs with bash and reads `JAVA_HOME` / `ANDROID_HOME` from the environment.
 

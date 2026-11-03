@@ -6,8 +6,8 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:colorAccent">@color/ink</item>
+        <item name="android:colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/ink</item>
-        <item name="android:colorControlHighlight">#1FFFFFFF</item>
+        <item name="android:colorControlHighlight">@color/press</item>
     </style>
 </resources>

@@ -12,9 +12,9 @@ import android.widget.Checkable
 import android.widget.Switch
 
 /**
- * Material 3 style switch (52×32dp track, 24dp thumb when on / 16dp outlined when off),
- * drawn by hand because the framework Switch ignores its drawable sizes in the off state.
- * Announced to TalkBack as a standard Switch.
+ * Compact switch in the style of social apps' settings: a 44×26dp track, solid ink when on,
+ * neutral grey when off, with a 22dp thumb that slides across. Drawn by hand because the
+ * framework Switch cannot be resized reliably. Announced to TalkBack as a standard Switch.
  */
 class ToggleView(context: Context) : View(context), Checkable {
 
@@ -25,7 +25,6 @@ class ToggleView(context: Context) : View(context), Checkable {
 
     private val d = resources.displayMetrics.density
     private val track = Paint(Paint.ANTI_ALIAS_FLAG)
-    private val outline = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2 * d }
     private val thumb = Paint(Paint.ANTI_ALIAS_FLAG)
     private val rect = RectF()
 
@@ -36,33 +35,27 @@ class ToggleView(context: Context) : View(context), Checkable {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) =
-        setMeasuredDimension((52 * d).toInt(), (48 * d).toInt()) // 48dp tall: touch target
+        setMeasuredDimension((TRACK_W * d).toInt(), (48 * d).toInt()) // 48dp tall: touch target
 
     override fun onDraw(canvas: Canvas) {
-        val top = (height - 32 * d) / 2
-        rect.set(0f, top, width.toFloat(), top + 32 * d)
-        val r = 16 * d
-        val ink = context.getColor(R.color.ink)
-        val soft = context.getColor(R.color.ink_soft)
+        val h = TRACK_H * d
+        val top = (height - h) / 2
+        rect.set(0f, top, width.toFloat(), top + h)
+        val r = h / 2
 
-        if (progress < 1f) {
-            track.color = context.getColor(R.color.surface_high)
-            canvas.drawRoundRect(rect, r, r, track)
-            outline.color = soft
-            rect.inset(d, d)
-            canvas.drawRoundRect(rect, r - d, r - d, outline)
-            rect.inset(-d, -d)
-        }
-        if (progress > 0f) {
-            track.color = ink
-            track.alpha = (255 * progress).toInt()
-            canvas.drawRoundRect(rect, r, r, track)
-            track.alpha = 255
-        }
-        val radius = (8 + 4 * progress) * d
-        val cx = 16 * d + (width - 32 * d) * progress
-        thumb.color = if (progress > 0.5f) context.getColor(R.color.bg) else soft
+        track.color = blend(context.getColor(R.color.switch_off), context.getColor(R.color.ink), progress)
+        canvas.drawRoundRect(rect, r, r, track)
+
+        val inset = (TRACK_H - THUMB) / 2 * d
+        val radius = THUMB / 2 * d
+        val cx = inset + radius + (width - 2 * (inset + radius)) * progress
+        thumb.color = blend(context.getColor(R.color.switch_thumb), context.getColor(R.color.bg), progress)
         canvas.drawCircle(cx, rect.centerY(), radius, thumb)
+    }
+
+    private fun blend(a: Int, b: Int, t: Float): Int {
+        fun ch(shift: Int) = (((a shr shift) and 0xFF) * (1 - t) + ((b shr shift) and 0xFF) * t).toInt() shl shift
+        return (0xFF shl 24) or ch(16) or ch(8) or ch(0)
     }
 
     override fun isChecked() = checked
@@ -95,5 +88,11 @@ class ToggleView(context: Context) : View(context), Checkable {
         info.className = Switch::class.java.name
         info.isCheckable = true
         info.isChecked = checked
+    }
+
+    private companion object {
+        const val TRACK_W = 44f
+        const val TRACK_H = 26f
+        const val THUMB = 22f
     }
 }

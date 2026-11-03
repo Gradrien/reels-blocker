@@ -94,6 +94,6 @@ Bug reports, detection fixes and translations are very welcome. Start with [CONT
 
 ## License
 
-Code under the [MIT License](LICENSE). The [Outfit](https://github.com/Outfitio/Outfit-Fonts) typeface is under the [SIL Open Font License 1.1](licenses/Outfit-OFL.txt).
+Code under the [MIT License](LICENSE).
 
 Reels Blocker is an independent project, not affiliated with, endorsed by or sponsored by Instagram or Meta. Instagram is a trademark of Meta Platforms, Inc.
