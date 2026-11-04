@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- In-app brand tile: the launcher icon in miniature (rounded gradient square, white glyph). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="32dp" android:height="32dp"
-    android:viewportWidth="62" android:viewportHeight="62">
-    <group android:translateX="-23" android:translateY="-23">
-        <!-- Triangle « play » aux coins arrondis -->
-        <path android:fillColor="@color/ink" android:strokeColor="@color/ink"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M28,0 H80 A28,28 0 0 1 108,28 V80 A28,28 0 0 1 80,108 H28 A28,28 0 0 1 0,80 V28 A28,28 0 0 1 28,0 Z">
+        <aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="0" android:startY="108" android:endX="108" android:endY="0"><item android:offset="0" android:color="@color/brand_start"/><item android:offset="1" android:color="@color/brand_end"/></gradient></aapt:attr>
+    </path>
+    <group android:pivotX="54" android:pivotY="54" android:scaleX="0.9" android:scaleY="0.9">
+        <path android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF"
             android:strokeWidth="8" android:strokeLineJoin="round"
             android:pathData="M41,35 L41,73 L73.5,54 Z" />
-        <!-- Réserve autour de la barre -->
-        <path android:strokeColor="@color/bg" android:strokeWidth="15" android:strokeLineCap="round"
-            android:pathData="M31,77 L77,31" />
-        <!-- Barre aux bouts arrondis, comme les pales du moulinet d'Eido -->
-        <path android:strokeColor="@color/ink" android:strokeWidth="8" android:strokeLineCap="round"
+        <path android:strokeWidth="15" android:strokeLineCap="round" android:pathData="M31,77 L77,31">
+            <aapt:attr name="android:strokeColor"><gradient android:type="linear" android:startX="-6" android:startY="114" android:endX="114" android:endY="-6"><item android:offset="0" android:color="@color/brand_start"/><item android:offset="1" android:color="@color/brand_end"/></gradient></aapt:attr>
+        </path>
+        <path android:strokeColor="#FFFFFFFF" android:strokeWidth="8" android:strokeLineCap="round"
             android:pathData="M31,77 L77,31" />
     </group>
 </vector>

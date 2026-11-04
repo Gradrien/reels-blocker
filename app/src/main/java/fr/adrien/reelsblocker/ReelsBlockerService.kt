@@ -7,20 +7,20 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 
 /**
- * Bloque les Reels d'Instagram, sauf ceux ouverts depuis une conversation privée.
+ * Blocks Instagram Reels, except the ones opened from a direct message.
  *
- * Écrans reconnus (via les identifiants de vues) :
- *  - REELS_TAB    : lecteur de Reels avec la barre d'onglets visible (onglet Reels)
- *                   -> on clique sur l'onglet Accueil (jamais de retour arrière : ça fermerait Instagram).
- *  - REELS_VIEWER : lecteur plein écran ouvert depuis un autre écran.
- *                   -> autorisé si on venait d'un DM, sinon un seul retour arrière (ferme le lecteur).
- *  - DM           : conversation privée.
- *  - MAIN         : un onglet principal (accueil, recherche, profil...).
- *  - OTHER        : le reste (commentaires, profil d'un ami, transitions...) : ne change rien.
+ * Screens it recognizes (from view resource ids):
+ *  - REELS_TAB    : the Reels player with the bottom tab bar visible (the Reels tab)
+ *                   -> taps the Home tab (never Back: that would close Instagram).
+ *  - REELS_VIEWER : the fullscreen player opened on top of another screen.
+ *                   -> allowed if we came from a DM, otherwise a single Back (closes the player).
+ *  - DM           : a direct message thread.
+ *  - MAIN         : a main tab (home, search, profile...).
+ *  - OTHER        : anything else (comments, a friend's profile, transitions...): changes nothing.
  *
- * L'origine d'un Reel = le dernier écran « sûr » (DM ou MAIN) vu avant son ouverture,
- * et elle ne s'efface qu'en revenant sur un écran sûr : un passage par les commentaires
- * ne transforme plus un Reel de DM en Reel bloqué.
+ * A Reel's origin is the last "safe" screen (DM or MAIN) seen before it opened, and it is only
+ * cleared when a safe screen shows again: going through the comments no longer turns a Reel
+ * from a DM into a blocked one.
  */
 class ReelsBlockerService : AccessibilityService() {
 
@@ -30,13 +30,13 @@ class ReelsBlockerService : AccessibilityService() {
         val ids: Set<String>,
         val selected: Set<String>,
         val homeTab: AccessibilityNodeInfo?,
-        /** Identifiants de la pile de vues réellement au premier plan au centre de l'écran. */
+        /** Ids along the view stack that is actually on top at the center of the screen. */
         val topCenter: List<String>,
-        /** Idem au niveau de la barre d'onglets, en bas de l'écran. */
+        /** Same, at the height of the bottom tab bar. */
         val topBottom: List<String>,
     )
 
-    private var origin = Screen.MAIN       // dernier écran sûr (DM ou MAIN)
+    private var origin = Screen.MAIN       // last safe screen (DM or MAIN)
     private var inReelSession = false
     private var reelSessionAllowed = false
     private var reelSessionStartedAt = 0L
@@ -50,7 +50,20 @@ class ReelsBlockerService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Prefs.setDiag(this, "connected", clock())
-        Log.i(TAG, "Service connecté")
+        Prefs.setServiceRunning(this, true)
+        PauseTile.refresh(this)
+        Log.i(TAG, "Service connected")
+    }
+
+    override fun onUnbind(intent: android.content.Intent?): Boolean {
+        Prefs.setServiceRunning(this, false)
+        PauseTile.refresh(this)
+        return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        Prefs.setServiceRunning(this, false)
+        super.onDestroy()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -59,32 +72,33 @@ class ReelsBlockerService : AccessibilityService() {
         if (debug) diagEvent(pkg)
         if (pkg != IG_PACKAGE) return
         if (!Prefs.enabled(this)) return
+        if (Prefs.isPaused(this)) return // temporary pause chosen by the user
 
         val now = SystemClock.elapsedRealtime()
         if (now < pausedUntil) return
         val type = event.eventType
 
-        // Les content-changed arrivent en rafale : on limite la fréquence des scans.
+        // Content-changed events come in bursts: throttle the scans.
         if (type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED && now - lastScanAt < SCAN_THROTTLE_MS) return
         lastScanAt = now
 
         val root = instagramRoot()
         if (root == null) {
-            if (debug) Prefs.setDiag(this, "root", "${clock()} racine Instagram introuvable")
+            if (debug) Prefs.setDiag(this, "root", "${clock()} Instagram root not found")
             return
         }
         val scan = scan(root)
-        if (debug) Prefs.setDiag(this, "root", "${clock()} racine OK, ${scan.ids.size} identifiants")
+        if (debug) Prefs.setDiag(this, "root", "${clock()} root OK, ${scan.ids.size} ids")
         if (scan.ids.isEmpty()) {
-            if (debug) Prefs.saveDebug(this, "SANS_ID", describeNodes(root))
-            return // écran en transition : on ne conclut rien
+            if (debug) Prefs.saveDebug(this, NO_ID, describeNodes(root))
+            return // screen in transition: conclude nothing
         }
         val screen = classify(scan)
 
         if (debug) {
-            val summary = "écran=$screen  origine=$origin  event=${AccessibilityEvent.eventTypeToString(type)}\n" +
-                "1er plan centre: ${scan.topCenter}\n1er plan bas: ${scan.topBottom}\n" +
-                "sélectionnés: ${scan.selected.sorted()}\ntous visibles:\n" + scan.ids.sorted().joinToString("\n")
+            val summary = "screen=$screen  origin=$origin  event=${AccessibilityEvent.eventTypeToString(type)}\n" +
+                "on top (center): ${scan.topCenter}\non top (bottom): ${scan.topBottom}\n" +
+                "selected: ${scan.selected.sorted()}\nall visible:\n" + scan.ids.sorted().joinToString("\n")
             Log.d(TAG, summary)
             Prefs.saveDebug(this, screen.name, summary)
         }
@@ -94,7 +108,7 @@ class ReelsBlockerService : AccessibilityService() {
                 origin = screen
                 inReelSession = false
             }
-            Screen.OTHER -> Unit // ni origine ni session modifiées
+            Screen.OTHER -> Unit // neither origin nor session change
             Screen.REELS_TAB -> {
                 inReelSession = false
                 goHomeTab(now, scan.homeTab)
@@ -106,7 +120,7 @@ class ReelsBlockerService : AccessibilityService() {
                     reelSessionStartedAt = now
                     swipeCount = 0
                     lastSwipeAt = 0L
-                    log(if (reelSessionAllowed) "Reel envoyé par un ami, laissé ouvert" else "Reel du fil, fermé")
+                    log(if (reelSessionAllowed) R.string.log_dm_reel_allowed else R.string.log_feed_reel_closed)
                 }
                 if (!reelSessionAllowed) {
                     closeViewer(now)
@@ -117,48 +131,48 @@ class ReelsBlockerService : AccessibilityService() {
         }
     }
 
-    /** Depuis un DM : le Reel partagé est OK, mais swiper vers les suivants = doomscroll. */
+    /** From a DM, the shared Reel is fine, but swiping on to the next ones is doomscrolling. */
     private fun handleSwipeInDmReel(now: Long) {
-        if (now - reelSessionStartedAt < OPENING_GRACE_MS) return // scrolls émis à l'ouverture
-        if (now - lastSwipeAt < SWIPE_DEBOUNCE_MS) return          // un swipe = plusieurs événements
+        if (now - reelSessionStartedAt < OPENING_GRACE_MS) return // scroll events fired while opening
+        if (now - lastSwipeAt < SWIPE_DEBOUNCE_MS) return          // one swipe fires several events
         lastSwipeAt = now
         swipeCount++
         if (swipeCount > ALLOWED_SWIPES_FROM_DM) {
-            log("Swipe après un Reel d'ami, fermé")
+            log(R.string.log_dm_swipe_closed)
             reelSessionAllowed = false
             closeViewer(now)
         }
     }
 
-    /** Seuls les scrolls du pager vertical des Reels comptent comme un swipe. */
+    /** Only scrolls of the vertical Reels pager count as a swipe. */
     private fun isPagerScroll(event: AccessibilityEvent): Boolean {
         val id = event.source?.viewIdResourceName ?: return false
         return REELS_PAGER_IDS.any { id.contains(it) }
     }
 
-    /** Lecteur empilé par-dessus un autre écran : un retour arrière le ferme sans quitter Instagram. */
+    /** The player is stacked on top of another screen: one Back closes it without leaving Instagram. */
     private fun closeViewer(now: Long) {
         if (!mayAct(now)) return
         performGlobalAction(GLOBAL_ACTION_BACK)
         Prefs.incrementBlocked(this)
     }
 
-    /** Onglet Reels : on bascule sur l'onglet Accueil plutôt que de faire « retour ». */
+    /** Reels tab: switch to the Home tab instead of pressing Back. */
     private fun goHomeTab(now: Long, homeTab: AccessibilityNodeInfo?) {
         if (!mayAct(now)) return
         val clicked = homeTab?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true
-        log(if (clicked) "Onglet Reels, retour à l'accueil" else "Onglet Reels : accueil introuvable, rien fait")
+        log(if (clicked) R.string.log_reels_tab_home else R.string.log_reels_tab_failed)
         if (clicked) Prefs.incrementBlocked(this)
     }
 
-    /** Délai entre deux actions + coupe-circuit : trop d'actions d'affilée = boucle, on se met en pause. */
+    /** Cooldown between actions + circuit breaker: too many actions in a row means a loop, so pause. */
     private fun mayAct(now: Long): Boolean {
         if (now - lastActionAt < ACTION_COOLDOWN_MS) return false
         while (recentActions.isNotEmpty() && now - recentActions.first() > LOOP_WINDOW_MS) recentActions.removeFirst()
         if (recentActions.size >= LOOP_MAX_ACTIONS) {
             pausedUntil = now + LOOP_PAUSE_MS
             recentActions.clear()
-            log("Trop de blocages d'affilée, pause d'une minute")
+            log(R.string.log_loop_pause)
             return false
         }
         recentActions.addLast(now)
@@ -166,17 +180,17 @@ class ReelsBlockerService : AccessibilityService() {
         return true
     }
 
-    private fun log(msg: String) {
-        Log.i(TAG, msg)
-        val stamp = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.FRANCE).format(java.util.Date())
-        Prefs.appendLog(this, "$stamp $msg")
+    /** Log lines are stored already translated, in the language active when they happened. */
+    private fun log(msgRes: Int) {
+        Log.i(TAG, getString(msgRes))
+        Prefs.logEvent(this, msgRes)
     }
 
-    private fun clock() = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.FRANCE).format(java.util.Date())
+    private fun clock() = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date())
 
     /**
-     * Seul ce qui est AU PREMIER PLAN compte : Instagram garde les onglets visités derrière l'écran
-     * courant, et Android les déclare « visibles » même recouverts.
+     * Only what is ON TOP matters: Instagram keeps visited tabs alive behind the current screen,
+     * and Android reports them as "visible" even when covered.
      */
     private fun classify(scan: Scan): Screen {
         val viewerOnTop = scan.topCenter.any { id -> REELS_VIEWER_IDS.any { id.contains(it) } }
@@ -191,8 +205,8 @@ class ReelsBlockerService : AccessibilityService() {
     }
 
     /**
-     * « Hit-test » : descend l'arbre en suivant, à chaque niveau, l'enfant dessiné en dernier
-     * (donc au-dessus) qui contient le point. Renvoie les identifiants rencontrés sur ce chemin.
+     * Hit test: walks down the tree, following at each level the child drawn last (so on top)
+     * that contains the point. Returns the ids met along that path.
      */
     private fun topmostIds(root: AccessibilityNodeInfo, x: Int, y: Int): List<String> {
         val out = ArrayList<String>()
@@ -217,7 +231,7 @@ class ReelsBlockerService : AccessibilityService() {
         return out
     }
 
-    /** Fenêtre active, ou à défaut la fenêtre Instagram parmi celles à l'écran. */
+    /** The active window, or else the Instagram window among those on screen. */
     private fun instagramRoot(): AccessibilityNodeInfo? {
         rootInActiveWindow?.takeIf { it.packageName == IG_PACKAGE }?.let { return it }
         return windows.firstNotNullOfOrNull { w -> w.root?.takeIf { it.packageName == IG_PACKAGE } }
@@ -230,10 +244,10 @@ class ReelsBlockerService : AccessibilityService() {
         val now = SystemClock.elapsedRealtime()
         if (now - lastDiagWrite < 1000) return
         lastDiagWrite = now
-        Prefs.setDiag(this, "events", "${clock()} $diagEvents événements reçus, dernier de $pkg")
+        Prefs.setDiag(this, "events", "${clock()} $diagEvents events received, last from $pkg")
     }
 
-    /** Quand il n'y a aucun identifiant : classes, descriptions et textes des premiers nœuds. */
+    /** When there are no ids at all: class names, descriptions and texts of the first nodes. */
     private fun describeNodes(root: AccessibilityNodeInfo): String {
         val out = StringBuilder()
         val queue = ArrayDeque<AccessibilityNodeInfo>()
@@ -254,7 +268,7 @@ class ReelsBlockerService : AccessibilityService() {
         return out.toString()
     }
 
-    /** Parcours en largeur de l'arbre de vues, borné pour rester léger. */
+    /** Breadth-first walk of the view tree, bounded to stay cheap. */
     private fun scan(root: AccessibilityNodeInfo): Scan {
         val ids = HashSet<String>()
         val selected = HashSet<String>()
@@ -265,7 +279,7 @@ class ReelsBlockerService : AccessibilityService() {
         while (queue.isNotEmpty() && visited < MAX_NODES) {
             val node = queue.removeFirst()
             visited++
-            // Instagram garde les onglets visités en mémoire, cachés : on ignore tout ce qui n'est pas à l'écran.
+            // Instagram keeps visited tabs in memory, hidden: skip everything that is not on screen.
             if (node !== root && !node.isVisibleToUser) continue
             node.viewIdResourceName?.takeIf { it.startsWith(IG_ID_PREFIX) }?.let { full ->
                 val id = full.removePrefix(IG_ID_PREFIX)
@@ -287,10 +301,12 @@ class ReelsBlockerService : AccessibilityService() {
 
     companion object {
         private const val TAG = "ReelsBlocker"
+        /** Debug dump key for screens that expose no view ids at all. */
+        const val NO_ID = "NO_ID"
         private const val IG_PACKAGE = "com.instagram.android"
         private const val IG_ID_PREFIX = "com.instagram.android:id/"
 
-        /** Fragments d'identifiants présents dans le lecteur plein écran de Reels. */
+        /** Id fragments found in the fullscreen Reels player. */
         val REELS_VIEWER_IDS = listOf(
             "clips_viewer_view_pager",
             "clips_viewer_container",
@@ -299,7 +315,7 @@ class ReelsBlockerService : AccessibilityService() {
         )
         val REELS_PAGER_IDS = listOf("clips_viewer_view_pager")
 
-        /** Fragments d'identifiants présents dans une conversation privée. */
+        /** Id fragments found in a direct message thread. */
         val DM_IDS = listOf(
             "direct_thread",
             "row_thread_composer",
@@ -307,7 +323,7 @@ class ReelsBlockerService : AccessibilityService() {
             "direct_message_list",
         )
 
-        /** Barre d'onglets du bas (identifiants exacts). */
+        /** Bottom tab bar (exact ids). */
         val TAB_BAR_IDS = listOf("tab_bar", "feed_tab", "clips_tab", "profile_tab")
         const val HOME_TAB_ID = "feed_tab"
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_description">Fait un retour arrière quand le lecteur de Reels d\'Instagram s\'ouvre depuis le fil, l\'onglet Reels ou Explorer. Les Reels envoyés en message privé restent visibles. Rien n\'est collecté ni envoyé.</string>
+
+    <string name="status_active">Protection active</string>
+    <string name="status_paused">En pause</string>
+    <string name="status_off">Protection coupée</string>
+
+    <string name="counter_label">Reels évités</string>
+    <string name="counter_delta">+%1$d depuis ta dernière visite</string>
+
+    <string name="setup_title">Active la protection</string>
+    <string name="setup_subtitle">Deux réglages Android, à faire une seule fois.</string>
+    <string name="setup_step_accessibility_title">Accessibilité</string>
+    <string name="setup_step_accessibility_subtitle">Active « Reels Blocker » dans la liste</string>
+    <string name="setup_step_battery_title">Autonomie (Xiaomi)</string>
+    <string name="setup_step_battery_subtitle">Démarrage auto + batterie « Aucune restriction »</string>
+    <string name="action_open">Ouvrir</string>
+
+    <string name="section_blocking">Blocage</string>
+    <string name="setting_block_reels_title">Bloquer les Reels</string>
+    <string name="setting_block_reels_subtitle">Onglet Reels, fil d\'actu et Explorer</string>
+    <string name="setting_block_dm_swipe_title">Bloquer le swipe depuis un DM</string>
+    <string name="setting_block_dm_swipe_subtitle">Le Reel envoyé par un ami reste visible</string>
+
+    <string name="section_activity">Activité récente</string>
+    <string name="log_empty">Rien pour l\'instant. Chaque Reel bloqué apparaîtra ici.</string>
+    <string name="log_yesterday">hier</string>
+    <string name="log_dm_reel_allowed">Reel envoyé par un ami, laissé ouvert</string>
+    <string name="log_feed_reel_closed">Reel du fil, fermé</string>
+    <string name="log_dm_swipe_closed">Swipe après un Reel d\'ami, fermé</string>
+    <string name="log_reels_tab_home">Onglet Reels, retour à l\'accueil</string>
+    <string name="log_reels_tab_failed">Onglet Reels : accueil introuvable, rien fait</string>
+    <string name="log_loop_pause">Trop de blocages d\'affilée, pause d\'une minute</string>
+
+    <string name="advanced">Avancé</string>
+    <string name="advanced_toggle_description">Avancé, afficher ou masquer</string>
+    <string name="link_accessibility_title">Accessibilité</string>
+    <string name="link_accessibility_subtitle">Activer ou couper le service</string>
+    <string name="link_app_settings_title">Réglages de l\'app</string>
+    <string name="link_app_settings_subtitle">Démarrage auto, batterie, paramètres restreints</string>
+    <string name="setting_debug_title">Mode diagnostic</string>
+    <string name="setting_debug_subtitle">Relève ce que l\'app voit dans Instagram</string>
+    <string name="action_copy_report">Copier le relevé</string>
+    <string name="report_copied">Relevé copié</string>
+
+    <string name="footer">Rien ne quitte ton téléphone · v%1$s</string>
+
+    <!-- Pause, tile, watchdog, onboarding -->
+    <string name="status_paused_until">En pause jusqu\'à %1$s</string>
+    <string name="action_hold_to_pause">Maintenir pour pause %1$d min</string>
+    <string name="action_resume">Reprendre</string>
+    <string name="log_paused">Pause de %1$d minutes</string>
+    <string name="log_resumed">Protection reprise</string>
+    <string name="tile_on">Active</string>
+    <string name="notif_channel">État de la protection</string>
+    <string name="notif_stopped_title">Reels Blocker s\'est arrêté</string>
+    <string name="notif_stopped_text">Android a coupé la protection. Touche pour la réactiver.</string>
+    <string name="link_setup_title">Guide d\'installation</string>
+    <string name="link_setup_subtitle">Refaire les étapes d\'activation</string>
+    <string name="onb_skip">Passer</string>
+    <string name="onb_step">Étape %1$d sur %2$d</string>
+    <string name="onb_welcome_title">Bloque les Reels, garde Instagram</string>
+    <string name="onb_welcome_b1">L\'onglet Reels te ramène à l\'accueil</string>
+    <string name="onb_welcome_b2">Les Reels du fil et d\'Explorer se ferment tout seuls</string>
+    <string name="onb_welcome_b3">Les Reels envoyés par tes amis en DM restent visibles</string>
+    <string name="onb_welcome_b4">Rien ne quitte ton téléphone : pas d\'accès Internet, aucun pistage</string>
+    <string name="onb_start">Commencer</string>
+    <string name="onb_a11y_title">Laisse Reels Blocker voir Instagram</string>
+    <string name="onb_a11y_body">Android appelle ça un service d\'accessibilité. Reels Blocker lit seulement le nom des écrans d\'Instagram, jamais tes messages, photos ou vidéos.</string>
+    <string name="onb_a11y_how">Cherche « Reels Blocker » dans la liste (parfois sous « Applications téléchargées ») et active-le.</string>
+    <string name="onb_a11y_restricted">Interrupteur grisé ? Android bloque ce réglage pour les apps installées hors du Play Store. Ouvre les infos de l\'app, touche ⋮, puis « Autoriser les paramètres restreints », et réessaie.</string>
+    <string name="onb_a11y_action">Ouvrir l\'accessibilité</string>
+    <string name="onb_open_app_info">Ouvrir les infos de l\'app</string>
+    <string name="onb_later">Plus tard</string>
+    <string name="onb_done">C\'est fait</string>
+    <string name="onb_next">Suivant</string>
+    <string name="onb_battery_title">Garde-le actif</string>
+    <string name="onb_battery_body">Certains téléphones arrêtent les apps en arrière-plan, surtout Xiaomi, Huawei et Samsung. Dans les infos de l\'app, règle la batterie sur « Aucune restriction » et, si l\'option existe, active le démarrage automatique.</string>
+    <string name="onb_notif_title">Sois prévenu s\'il s\'arrête</string>
+    <string name="onb_notif_body">Si Android coupe la protection, Reels Blocker peut t\'envoyer une notification pour la réactiver. Rien d\'autre, jamais.</string>
+    <string name="onb_notif_action">Autoriser les notifications</string>
+    <string name="onb_not_now">Pas maintenant</string>
+</resources>

@@ -8,13 +8,13 @@ android
 
 ## Users
 - Primary: the author, on a Xiaomi phone (HyperOS), who wants to stop doomscrolling Instagram Reels without giving up Instagram itself.
-- Secondary: people who find the public GitHub repo and sideload the APK. They meet the app cold, so the screen has to walk them through activation (Accessibility service, Xiaomi autostart/battery).
+- Secondary (now the main audience): people who find the public GitHub repo and sideload the APK. They meet the app cold, so the screen has to walk them through activation (Accessibility service, Xiaomi autostart/battery).
 
 ## Product Purpose
 Blocks Instagram Reels at the point of entry: the Reels tab redirects to Home, a fullscreen Reel opened from the feed/Explore is closed. Reels a friend sent in DMs stay watchable; swiping on to further Reels from there is blocked (toggle). Success = the user keeps using Instagram for friends and DMs while the infinite Reels feed stops being reachable.
 
 ## Positioning
-A tiny, open-source, no-network alternative to ad-supported blockers like NoScroll: zero dependencies, ~50 KB APK, no tracking, and it deliberately keeps Reels shared by friends.
+A tiny, open-source, no-network alternative to ad-supported blockers like NoScroll: zero dependencies, APK well under 200 KB, no tracking, and it deliberately keeps Reels shared by friends.
 
 ## Operating Context
 - Opened rarely: first-run setup, then occasional check that protection is running and how many Reels were avoided.
@@ -25,11 +25,11 @@ A tiny, open-source, no-network alternative to ad-supported blockers like NoScro
 ## Capabilities and Constraints
 - Kotlin, framework Views only, no AndroidX/Compose, no dependencies, no INTERNET permission. minSdk 28, targetSdk 35.
 - Screen priorities (confirmed): 1) protection status + "Reels évités" counter, 2) setup steps when not active, 3) settings (blocking on/off, block swipe from DM), 4) recent activity log, 5) debug tucked into an "Avancé" section.
-- UI language: French.
+- UI language: English by default, French translation (`values-fr`). Every user-facing string lives in `strings.xml`.
 
 ## Brand Commitments
 - Name: "Reels Blocker" (confirmed by user).
-- Current launcher icon is a placeholder system drawable; user explicitly rejected it — needs a real icon.
+- Launcher icon: original "play glyph struck through" in white on the Ember-to-Raspberry gradient. Never reuse Instagram's logo, glyphs or exact gradient.
 
 ## Evidence on Hand
 - Blocked-count and decision log are real, local-only data. No users, testimonials, or stats to cite beyond that.

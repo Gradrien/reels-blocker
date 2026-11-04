@@ -1,0 +1,41 @@
+name: Detection broke after an Instagram update
+description: Reels are no longer blocked, or something is blocked that should not be.
+labels: [detection]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Instagram renames its internal view ids from time to time. The diagnostic report tells us which ones changed.
+        In the app: **Advanced → Diagnostic mode**, reproduce the problem in Instagram, come back and tap **Copy report**.
+        The report only contains view ids and class names, never your messages or media. Skim it before pasting anyway.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you opened in Instagram, what you expected, and what Reels Blocker did.
+    validations:
+      required: true
+  - type: input
+    id: instagram-version
+    attributes:
+      label: Instagram version
+      description: Android Settings → Apps → Instagram, at the bottom.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Reels Blocker version
+      description: Shown at the bottom of the app screen.
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Phone and Android version
+      placeholder: Xiaomi 13, HyperOS 2 / Android 15
+  - type: textarea
+    id: report
+    attributes:
+      label: Diagnostic report
+      render: text

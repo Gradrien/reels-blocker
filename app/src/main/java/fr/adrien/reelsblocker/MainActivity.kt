@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -31,25 +30,28 @@ import android.widget.TextView
 import android.widget.Toast
 
 /**
- * Écran unique, construit en code (aucune dépendance).
- * Direction artistique reprise d'Eido : crème / brun, Outfit, cartes très arrondies.
+ * The app's single screen, built in code (no dependencies, no XML layouts).
+ * Visual tokens come from resources (colors); copy comes from strings.xml. See DESIGN.md.
  */
 class MainActivity : Activity() {
 
-    // ── typo & couleurs ──
-    private val regular by lazy { resources.getFont(R.font.outfit_regular) }
-    private val medium by lazy { resources.getFont(R.font.outfit_medium) }
-    private val semibold by lazy { resources.getFont(R.font.outfit_semibold) }
+    // ── type & colors ──
+    // System sans-serif (Roboto on most phones): zero bytes in the APK, matches the platform.
+    private val regular: Typeface = Typeface.create(Typeface.SANS_SERIF, 400, false)
+    private val medium: Typeface = Typeface.create(Typeface.SANS_SERIF, 500, false)
+    private val bold: Typeface = Typeface.create(Typeface.SANS_SERIF, 700, false)
     private fun c(id: Int) = getColor(id)
 
-    // ── vues mises à jour à chaque refresh ──
+    // ── views updated on every refresh ──
+    private lateinit var statusChip: LinearLayout
     private lateinit var statusDot: View
     private lateinit var statusText: TextView
-    private lateinit var counter: TextView
+    private lateinit var counter: GradientTextView
     private lateinit var counterDelta: TextView
+    private lateinit var pauseButton: HoldButton
+    private lateinit var resumeButton: View
     private lateinit var setupCard: View
     private lateinit var settingsBlock: View
-    private lateinit var heroCard: View
     private lateinit var logBlock: View
     private lateinit var blockSwitch: ToggleView
     private lateinit var logList: LinearLayout
@@ -59,45 +61,58 @@ class MainActivity : Activity() {
     private lateinit var debugText: TextView
 
     private var displayedCount = -1
+    private val refreshRunnable = Runnable { refresh() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!Prefs.onboarded(this)) {
+            // People upgrading from a version without onboarding are already set up: don't send them through it.
+            if (Protection.isServiceEnabled(this)) {
+                Prefs.setOnboarded(this, true)
+            } else {
+                startActivity(Intent(this, OnboardingActivity::class.java))
+                finish()
+                return
+            }
+        }
         goEdgeToEdge()
 
-        val col = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), 0, dp(16), dp(24))
-        }
+        // Full-bleed column: rows own their 16dp gutter so ripples and separators reach the edges.
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
         col.addView(header())
-        // Service coupé : l'activation passe avant tout le reste.
-        setupCard = setupCard().also { col.addView(it, lp(top = 8)) }
-        heroCard = heroCard().also { col.addView(it, lp(top = 8)) }
+        col.addView(hero())
+        // When the service is off, the setup card sits right under the counter, before the settings.
+        setupCard = setupCard().also {
+            col.addView(it, lp(top = 0).apply { leftMargin = dp(GUTTER); rightMargin = dp(GUTTER); bottomMargin = dp(24) })
+        }
 
         settingsBlock = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(sectionLabel("Blocage"))
-            addView(settingsCard())
+            addView(separator())
+            addView(sectionTitle(getString(R.string.section_blocking)))
+            addView(settingsRows())
         }
         col.addView(settingsBlock)
 
         logList = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            background = card()
-            setPadding(0, dp(8), 0, dp(8))
+            setPadding(0, 0, 0, dp(8))
         }
         logBlock = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(sectionLabel("Activité récente"))
+            addView(separator())
+            addView(sectionTitle(getString(R.string.section_activity)))
             addView(logList)
         }
         col.addView(logBlock)
 
-        col.addView(advancedCard(), lp(top = 32))
+        col.addView(separator())
+        col.addView(advancedSection())
 
-        col.addView(text("Rien ne quitte ton téléphone · v${appVersion()}", 13f, regular, R.color.ink_soft).apply {
+        col.addView(text(getString(R.string.footer, appVersion()), 12f, regular, R.color.ink_soft).apply {
             gravity = Gravity.CENTER
-            setPadding(0, dp(24), 0, 0)
+            setPadding(dp(GUTTER), dp(24), dp(GUTTER), 0)
         })
 
         col.layoutTransition = LayoutTransition()
@@ -106,7 +121,7 @@ class MainActivity : Activity() {
             clipToPadding = false
             addView(col)
         }
-        // Voile de la couleur du fond sous la barre d'état : le contenu défile dessous sans s'y superposer.
+        // Background-colored scrim under the status bar: content scrolls beneath it instead of overlapping it.
         val scrim = View(this).apply { setBackgroundColor(c(R.color.bg)) }
         val root = FrameLayout(this).apply {
             addView(scroll)
@@ -114,8 +129,8 @@ class MainActivity : Activity() {
         }
         root.setOnApplyWindowInsetsListener { _, insets ->
             val (l, t, r, b) = systemBars(insets).toList()
-            // Les insets vont sur la colonne : le contenu passe sous la barre de gestes au lieu d'y être coupé.
-            col.setPadding(dp(16) + l, t, dp(16) + r, dp(24) + b)
+            // Insets go on the column, so content scrolls under the gesture bar instead of being clipped by it.
+            col.setPadding(l, t, r, dp(24) + b)
             scrim.layoutParams = scrim.layoutParams.apply { height = t }
             insets
         }
@@ -124,84 +139,128 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        Watchdog.schedule(this)
+        if (Protection.isServiceEnabled(this)) Watchdog.cancelAlert(this)
         refresh()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        counter.removeCallbacks(refreshRunnable)
     }
 
     // ────────────────────────────── sections ──────────────────────────────
 
+    /** Top bar: the brand tile and the app name, left-aligned like a social app's top bar. */
     private fun header() = LinearLayout(this).apply {
         gravity = Gravity.CENTER_VERTICAL
-        setPadding(dp(8), dp(16), dp(8), dp(8))
-        minimumHeight = dp(64)
-        addView(ImageView(context).apply { setImageResource(R.drawable.ic_mark) }, LinearLayout.LayoutParams(dp(32), dp(32)))
-        addView(text("Reels Blocker", 22f, medium, R.color.ink).apply { setPadding(dp(12), 0, 0, 0) })
+        setPadding(dp(GUTTER), dp(12), dp(GUTTER), dp(4))
+        minimumHeight = dp(56)
+        addView(ImageView(context).apply {
+            setImageResource(R.drawable.ic_mark)
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }, LinearLayout.LayoutParams(dp(30), dp(30)))
+        addView(text(getString(R.string.app_name), 22f, bold, R.color.ink).apply {
+            setPadding(dp(10), 0, 0, 0)
+            isAccessibilityHeading = true
+        })
     }
 
-    private fun heroCard() = LinearLayout(this).apply {
+    /** The focal point, laid out like a profile stat: status chip, big gradient number, label. */
+    private fun hero() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        background = card()
-        setPadding(dp(24), dp(20), dp(24), dp(24))
+        gravity = Gravity.CENTER_HORIZONTAL
+        setPadding(dp(GUTTER), dp(24), dp(GUTTER), dp(28))
 
-        addView(LinearLayout(context).apply {
+        statusChip = LinearLayout(context).apply {
             gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(12), 0, dp(14), 0)
+            minimumHeight = dp(32)
             statusDot = View(context).also { addView(it, LinearLayout.LayoutParams(dp(8), dp(8))) }
-            statusText = text("", 14f, medium, R.color.ink_soft).apply { setPadding(dp(8), 0, 0, 0) }
+            statusText = text("", 13f, medium, R.color.ink).apply { setPadding(dp(8), 0, 0, 0) }
             addView(statusText)
-        })
-        counter = text("0", 72f, semibold, R.color.ink).apply {
+        }
+        addView(statusChip, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+
+        counter = GradientTextView(context, c(R.color.brand_start), c(R.color.brand_end)).apply {
+            text = "0"
+            textSize = 72f
+            typeface = bold
+            gravity = Gravity.CENTER
             fontFeatureSettings = "tnum"
             letterSpacing = -0.03f
             includeFontPadding = false
             setPadding(0, dp(20), 0, 0)
         }
         addView(counter)
-        addView(text("Reels évités", 16f, regular, R.color.ink_soft).apply { setPadding(0, dp(4), 0, 0) })
-        counterDelta = text("", 14f, medium, R.color.ink_soft).apply { setPadding(0, dp(12), 0, 0) }
+        addView(text(getString(R.string.counter_label), 15f, medium, R.color.ink).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(6), 0, 0)
+        })
+        counterDelta = text("", 13f, regular, R.color.ink_soft).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(4), 0, 0)
+        }
         addView(counterDelta)
+
+        // Pause: hold to confirm (deliberate friction), resume with a plain tap.
+        pauseButton = HoldButton(
+            context, bold,
+            fillColor = c(R.color.surface_high),
+            sweepColor = (c(R.color.ink) and 0x00FFFFFF) or 0x26000000,
+            textColor = c(R.color.ink),
+        ).apply {
+            text = getString(R.string.action_hold_to_pause, Protection.PAUSE_MINUTES)
+            onConfirm = { Protection.pause(context); refresh() }
+        }
+        addView(pauseButton, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(20)
+        })
+        resumeButton = button(getString(R.string.action_resume), primary = true) { Protection.resume(context); refresh() }
+        addView(resumeButton, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(14)
+        })
     }
 
     private fun setupCard() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        background = rounded(c(R.color.warn_bg), 28)
-        setPadding(dp(24), dp(20), dp(24), dp(12))
-        addView(text("Active la protection", 18f, medium, R.color.ink))
-        addView(text("Deux réglages Android, à faire une seule fois.", 14f, regular, R.color.ink_soft).apply {
+        background = rounded(c(R.color.warn_bg), RADIUS_CARD)
+        setPadding(dp(GUTTER), dp(16), dp(GUTTER), dp(8))
+        addView(text(getString(R.string.setup_title), 17f, bold, R.color.ink).apply { isAccessibilityHeading = true })
+        addView(text(getString(R.string.setup_subtitle), 14f, regular, R.color.ink_soft).apply {
             setPadding(0, dp(4), 0, dp(8))
         })
-        addView(stepRow("1", "Accessibilité", "Active « Reels Blocker » dans la liste") {
+        addView(stepRow("1", getString(R.string.setup_step_accessibility_title), getString(R.string.setup_step_accessibility_subtitle)) {
             startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         })
-        addView(stepRow("2", "Autonomie (Xiaomi)", "Démarrage auto + batterie « Aucune restriction »") {
+        addView(stepRow("2", getString(R.string.setup_step_battery_title), getString(R.string.setup_step_battery_subtitle)) {
             openAppSettings()
         })
     }
 
-    private fun settingsCard() = LinearLayout(this).apply {
+    private fun settingsRows() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        background = card()
-        blockSwitch = switchRow(this, "Bloquer les Reels", "Onglet Reels, fil d'actu et Explorer", Prefs.enabled(context)) {
-            Prefs.setEnabled(context, it); refresh()
+        blockSwitch = switchRow(this, getString(R.string.setting_block_reels_title), getString(R.string.setting_block_reels_subtitle), Prefs.enabled(context)) {
+            Prefs.setEnabled(context, it); PauseTile.refresh(context); refresh()
         }
-        addView(divider())
-        switchRow(this, "Bloquer le swipe depuis un DM", "Le Reel envoyé par un ami reste visible", Prefs.blockDmSwipe(context)) {
+        switchRow(this, getString(R.string.setting_block_dm_swipe_title), getString(R.string.setting_block_dm_swipe_subtitle), Prefs.blockDmSwipe(context)) {
             Prefs.setBlockDmSwipe(context, it)
         }
     }
 
-    private fun advancedCard() = LinearLayout(this).apply {
+    private fun advancedSection() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        background = card()
 
         val head = LinearLayout(context).apply {
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(64)
-            setPadding(dp(24), 0, dp(20), 0)
-            background = ripple(28)
-            addView(text("Avancé", 16f, medium, R.color.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+            minimumHeight = dp(56)
+            setPadding(dp(GUTTER), 0, dp(12), 0)
+            background = ripple()
+            addView(text(getString(R.string.advanced), 16f, bold, R.color.ink), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             advancedChevron = ImageView(context).apply { setImageResource(R.drawable.ic_chevron) }
             addView(advancedChevron, LinearLayout.LayoutParams(dp(24), dp(24)))
             setOnClickListener { toggleAdvanced() }
-            contentDescription = "Avancé, afficher ou masquer"
+            contentDescription = getString(R.string.advanced_toggle_description)
         }
         addView(head)
 
@@ -209,31 +268,32 @@ class MainActivity : Activity() {
         advancedBody = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
-            addView(divider())
-            addView(linkRow("Accessibilité", "Activer ou couper le service") {
+            addView(linkRow(getString(R.string.link_setup_title), getString(R.string.link_setup_subtitle)) {
+                startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
+            })
+            addView(linkRow(getString(R.string.link_accessibility_title), getString(R.string.link_accessibility_subtitle)) {
                 startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             })
-            addView(divider())
-            addView(linkRow("Réglages de l'app", "Démarrage auto, batterie, paramètres restreints") { openAppSettings() })
-            addView(divider())
-            switchRow(this, "Mode diagnostic", "Relève ce que l'app voit dans Instagram", Prefs.debug(context)) {
+            addView(linkRow(getString(R.string.link_app_settings_title), getString(R.string.link_app_settings_subtitle)) { openAppSettings() })
+            switchRow(this, getString(R.string.setting_debug_title), getString(R.string.setting_debug_subtitle), Prefs.debug(context)) {
                 Prefs.setDebug(context, it); refresh()
             }
             debugBlock = LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
-                setPadding(dp(16), 0, dp(16), dp(16))
-                addView(pillButton("Copier le relevé") {
+                setPadding(dp(GUTTER), 0, dp(GUTTER), dp(16))
+                addView(button(getString(R.string.action_copy_report), primary = false) {
                     getSystemService(ClipboardManager::class.java)
                         .setPrimaryClip(ClipData.newPlainText("reels-blocker", debugText.text))
-                    // Android 13+ affiche déjà sa propre confirmation de copie.
-                    if (Build.VERSION.SDK_INT < 33) Toast.makeText(context, "Relevé copié", Toast.LENGTH_SHORT).show()
-                }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                    leftMargin = dp(8); bottomMargin = dp(12)
+                    // Android 13+ already shows its own copy confirmation.
+                    if (Build.VERSION.SDK_INT < 33) Toast.makeText(context, R.string.report_copied, Toast.LENGTH_SHORT).show()
+                }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    bottomMargin = dp(8)
                 })
                 debugText = text("", 12f, Typeface.MONOSPACE, R.color.ink_soft).apply {
                     setTextIsSelectable(true)
-                    background = rounded(c(R.color.surface_high), 16)
-                    setPadding(dp(16), dp(14), dp(16), dp(14))
+                    ellipsize = null
+                    background = rounded(c(R.color.surface), RADIUS_INSET)
+                    setPadding(dp(12), dp(12), dp(12), dp(12))
                 }
                 addView(debugText)
             }
@@ -242,23 +302,35 @@ class MainActivity : Activity() {
         addView(advancedBody)
     }
 
-    // ────────────────────────────── état ──────────────────────────────
+    // ────────────────────────────── state ──────────────────────────────
 
     private fun refresh() {
-        val service = isServiceEnabled()
-        val on = Prefs.enabled(this)
-        val (label, color) = when {
-            !service -> "Protection coupée" to R.color.warn
-            !on -> "En pause" to R.color.ink_mute
-            else -> "Protection active" to R.color.ok
+        val state = Protection.state(this)
+        val service = state != Protection.State.SERVICE_OFF
+        val (label, color) = when (state) {
+            Protection.State.SERVICE_OFF -> getString(R.string.status_off) to R.color.warn
+            Protection.State.SWITCHED_OFF -> getString(R.string.status_paused) to R.color.ink_mute
+            Protection.State.PAUSED -> getString(R.string.status_paused_until, Protection.pausedUntilLabel(this)) to R.color.ink_mute
+            Protection.State.ACTIVE -> getString(R.string.status_active) to R.color.ok
         }
         statusText.text = label
         statusDot.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(c(color)) }
+        statusChip.background = GradientDrawable().apply {
+            cornerRadius = dp(16).toFloat()
+            setStroke(dp(1), c(R.color.line))
+        }
 
         setupCard.visibility = if (service) View.GONE else View.VISIBLE
-        // Tant que le service est coupé, seule l'activation compte : le reste s'efface et devient inactif.
+        // While the service is off, only setup matters: everything else fades and is disabled.
         listOf(settingsBlock, logBlock).forEach { setEnabledDeep(it, service); it.alpha = if (service) 1f else 0.45f }
-        blockSwitch.isChecked = on
+        blockSwitch.isChecked = Prefs.enabled(this)
+        pauseButton.visibility = if (state == Protection.State.ACTIVE) View.VISIBLE else View.GONE
+        resumeButton.visibility = if (state == Protection.State.PAUSED) View.VISIBLE else View.GONE
+        // Refresh by itself when a pause runs out while the screen is open.
+        counter.removeCallbacks(refreshRunnable)
+        if (state == Protection.State.PAUSED) {
+            counter.postDelayed(refreshRunnable, Prefs.pausedUntil(this) - System.currentTimeMillis() + 500)
+        }
 
         animateCounter(Prefs.blockedCount(this))
         if (!service) counterDelta.visibility = View.GONE
@@ -268,11 +340,11 @@ class MainActivity : Activity() {
         if (Prefs.debug(this)) debugText.text = debugDump()
     }
 
-    /** Signature : le compteur monte depuis la valeur vue à la dernière visite. */
+    /** Signature moment: the counter climbs from the value seen on the last visit. */
     private fun animateCounter(count: Int) {
         val lastSeen = Prefs.lastSeenCount(this)
         val delta = count - lastSeen
-        counterDelta.text = if (delta > 0) "+$delta depuis ta dernière visite" else ""
+        counterDelta.text = if (delta > 0) getString(R.string.counter_delta, delta) else ""
         counterDelta.visibility = if (delta > 0) View.VISIBLE else View.GONE
         Prefs.setLastSeenCount(this, count)
 
@@ -291,18 +363,18 @@ class MainActivity : Activity() {
         logList.removeAllViews()
         val entries = Prefs.log(this).lines().filter { it.isNotBlank() }.take(6)
         if (entries.isEmpty()) {
-            logList.addView(text("Rien pour l'instant. Chaque Reel bloqué apparaîtra ici.", 14f, regular, R.color.ink_soft).apply {
-                setPadding(dp(24), dp(12), dp(24), dp(12))
+            logList.addView(text(getString(R.string.log_empty), 14f, regular, R.color.ink_soft).apply {
+                setPadding(dp(GUTTER), dp(4), dp(GUTTER), dp(12))
             })
             return
         }
         val stamps = entries.map(::logStamp)
-        // Colonne horaire alignée : largeur de l'étiquette la plus large, mesurée à la taille de police réelle.
+        // Aligned time column: width of the widest label, measured at the actual font size.
         val probe = text("", 14f, regular, R.color.ink_soft).paint
         val column = stamps.maxOf { probe.measureText(it.first) }.toInt() + dp(16)
         stamps.forEach { (time, msg) ->
             logList.addView(LinearLayout(this).apply {
-                setPadding(dp(24), dp(10), dp(24), dp(10))
+                setPadding(dp(GUTTER), dp(8), dp(GUTTER), dp(8))
                 addView(text(time, 14f, regular, R.color.ink_soft).apply { fontFeatureSettings = "tnum" },
                     LinearLayout.LayoutParams(column, ViewGroup.LayoutParams.WRAP_CONTENT))
                 addView(text(msg, 14f, regular, R.color.ink),
@@ -311,7 +383,7 @@ class MainActivity : Activity() {
         }
     }
 
-    /** « 2026-11-02 14:32 msg » -> heure si aujourd'hui, « hier » ou la date sinon. Ancien format « 14:32:10 msg » accepté. */
+    /** "2026-11-02 14:32 msg" -> time if today, "yesterday", or the date otherwise. Legacy "14:32:10 msg" lines are accepted. */
     private fun logStamp(line: String): Pair<String, String> {
         val first = line.substringBefore(' ')
         if (first.contains(':')) return first.take(5) to line.substringAfter(' ')
@@ -322,19 +394,20 @@ class MainActivity : Activity() {
         val today = java.time.LocalDate.now()
         val label = when (date) {
             today -> time
-            today.minusDays(1) -> "hier"
-            else -> date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM", java.util.Locale.FRANCE))
+            today.minusDays(1) -> getString(R.string.log_yesterday)
+            else -> date.format(java.time.format.DateTimeFormatter.ofPattern("d MMM", java.util.Locale.getDefault()))
         }
         return label to msg
     }
 
     private fun debugDump(): String {
-        val diag = "Service démarré : " + Prefs.diag(this, "connected").ifBlank { "jamais" } + "\n" +
-            "Événements : " + Prefs.diag(this, "events").ifBlank { "aucun" } + "\n" +
-            "Lecture écran : " + Prefs.diag(this, "root").ifBlank { "jamais tentée" }
-        val screens = ReelsBlockerService.Screen.entries.map { it.name } + "SANS_ID"
+        // Diagnostic report stays in English on purpose: it is pasted into GitHub issues.
+        val diag = "Service started: " + Prefs.diag(this, "connected").ifBlank { "never" } + "\n" +
+            "Events: " + Prefs.diag(this, "events").ifBlank { "none" } + "\n" +
+            "Screen read: " + Prefs.diag(this, "root").ifBlank { "never attempted" }
+        val screens = ReelsBlockerService.Screen.entries.map { it.name } + ReelsBlockerService.NO_ID
         return diag + "\n\n" + screens.joinToString("\n\n") { s ->
-            "── $s ──\n" + Prefs.debugDump(this, s).ifBlank { "(pas encore vu)" }
+            "── $s ──\n" + Prefs.debugDump(this, s).ifBlank { "(not seen yet)" }
         }
     }
 
@@ -349,10 +422,17 @@ class MainActivity : Activity() {
         advancedChevron.animate().rotation(if (open) 180f else 0f).setDuration(200).start()
     }
 
-    // ────────────────────────────── composants ──────────────────────────────
+    // ────────────────────────────── components ──────────────────────────────
 
-    private fun sectionLabel(t: String) = text(t, 14f, medium, R.color.ink_soft).apply {
-        setPadding(dp(24), dp(32), dp(24), dp(10))
+    private fun sectionTitle(t: String) = text(t, 16f, bold, R.color.ink).apply {
+        setPadding(dp(GUTTER), dp(20), dp(GUTTER), dp(8))
+        isAccessibilityHeading = true
+    }
+
+    /** Full-bleed hairline between sections. */
+    private fun separator() = View(this).apply {
+        setBackgroundColor(c(R.color.line))
+        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1)
     }
 
     private fun switchRow(parent: LinearLayout, title: String, sub: String, checked: Boolean, onChange: (Boolean) -> Unit): ToggleView {
@@ -363,9 +443,9 @@ class MainActivity : Activity() {
         }
         parent.addView(LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = dp(76)
-            setPadding(dp(24), dp(12), dp(20), dp(12))
-            background = ripple(0)
+            minimumHeight = dp(64)
+            setPadding(dp(GUTTER), dp(10), dp(GUTTER), dp(10))
+            background = ripple()
             setOnClickListener { sw.toggle() }
             addView(titleSub(title, sub), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
             addView(sw, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { leftMargin = dp(16) })
@@ -375,9 +455,9 @@ class MainActivity : Activity() {
 
     private fun linkRow(title: String, sub: String, onClick: () -> Unit) = LinearLayout(this).apply {
         gravity = Gravity.CENTER_VERTICAL
-        minimumHeight = dp(72)
-        setPadding(dp(24), dp(12), dp(24), dp(12))
-        background = ripple(0)
+        minimumHeight = dp(64)
+        setPadding(dp(GUTTER), dp(10), dp(12), dp(10))
+        background = ripple()
         setOnClickListener { onClick() }
         addView(titleSub(title, sub), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         addView(ImageView(context).apply { setImageResource(R.drawable.ic_chevron); rotation = -90f },
@@ -386,43 +466,44 @@ class MainActivity : Activity() {
 
     private fun stepRow(n: String, title: String, sub: String, onClick: () -> Unit) = LinearLayout(this).apply {
         gravity = Gravity.CENTER_VERTICAL
-        minimumHeight = dp(72)
-        setPadding(0, dp(8), 0, dp(8))
-        addView(text(n, 14f, semibold, R.color.on_ink).apply {
+        minimumHeight = dp(64)
+        setPadding(0, dp(6), 0, dp(6))
+        addView(text(n, 13f, bold, R.color.ink).apply {
             gravity = Gravity.CENTER
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(c(R.color.ink)) }
-        }, LinearLayout.LayoutParams(dp(28), dp(28)))
-        addView(titleSub(title, sub).apply { setPadding(dp(14), 0, dp(12), 0) },
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setStroke(dp(1), c(R.color.ink))
+            }
+        }, LinearLayout.LayoutParams(dp(26), dp(26)))
+        addView(titleSub(title, sub).apply { setPadding(dp(12), 0, dp(12), 0) },
             LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        addView(pillButton("Ouvrir", onClick))
+        addView(button(getString(R.string.action_open), primary = true, onClick = onClick))
     }
 
     private fun titleSub(title: String, sub: String) = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
-        addView(text(title, 16f, medium, R.color.ink))
-        addView(text(sub, 14f, regular, R.color.ink_soft).apply { setPadding(0, dp(2), 0, 0) })
+        addView(text(title, 15f, medium, R.color.ink))
+        addView(text(sub, 13f, regular, R.color.ink_soft).apply { setPadding(0, dp(2), 0, 0) })
     }
 
-    private fun pillButton(label: String, onClick: () -> Unit) = text(label, 14f, medium, R.color.on_ink).apply {
-        gravity = Gravity.CENTER
-        minHeight = dp(40)
-        minWidth = dp(88)
-        setPadding(dp(18), 0, dp(18), 0)
-        background = RippleDrawable(ColorStateList.valueOf(0x33FFFFFF), rounded(c(R.color.ink), 20), null)
-        isClickable = true
-        setOnClickListener { onClick() }
-    }.let { btn ->
-        // cible tactile de 48 dp autour d'un bouton visuel de 40 dp
-        FrameLayout(this).apply {
-            setPadding(0, dp(4), 0, dp(4))
-            addView(btn)
+    /**
+     * Compact 8dp-radius button. Primary: accent fill, white label. Secondary: neutral fill.
+     * The visual button is 36dp tall inside a 48dp touch frame.
+     */
+    private fun button(label: String, primary: Boolean, onClick: () -> Unit): View {
+        val fill = c(if (primary) R.color.accent else R.color.surface_high)
+        val btn = text(label, 14f, bold, if (primary) R.color.on_accent else R.color.ink).apply {
+            gravity = Gravity.CENTER
+            minHeight = dp(36)
+            minWidth = dp(72)
+            setPadding(dp(16), 0, dp(16), 0)
+            background = RippleDrawable(ColorStateList.valueOf(c(R.color.press)), rounded(fill, RADIUS_BUTTON), null)
+            isClickable = true
+            setOnClickListener { onClick() }
         }
-    }
-
-    private fun divider() = View(this).apply {
-        setBackgroundColor(c(R.color.line))
-        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1).apply {
-            leftMargin = dp(24); rightMargin = dp(24)
+        return FrameLayout(this).apply {
+            setPadding(0, dp(6), 0, dp(6))
+            addView(btn, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
     }
 
@@ -439,12 +520,10 @@ class MainActivity : Activity() {
         setColor(color); cornerRadius = dp(radiusDp).toFloat()
     }
 
-    private fun card() = rounded(c(R.color.surface), 28)
+    private fun ripple(): Drawable =
+        RippleDrawable(ColorStateList.valueOf(c(R.color.press)), null, ColorDrawable(0xFF000000.toInt()))
 
-    private fun ripple(radiusDp: Int): Drawable =
-        RippleDrawable(ColorStateList.valueOf(c(R.color.line)), null, rounded(0xFF000000.toInt(), radiusDp))
-
-    // ── système ──
+    // ── system ──
     private fun goEdgeToEdge() {
         window.setBackgroundDrawable(ColorDrawable(c(R.color.bg)))
         if (Build.VERSION.SDK_INT >= 30) {
@@ -470,17 +549,17 @@ class MainActivity : Activity() {
     private fun openAppSettings() =
         startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
 
-    private fun isServiceEnabled(): Boolean {
-        val me = ComponentName(this, ReelsBlockerService::class.java)
-        val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
-        // Android stocke la forme longue ou courte (« pkg/.Classe ») selon les versions : on compare les composants.
-        return enabled.split(':').any { ComponentName.unflattenFromString(it) == me }
-    }
-
     private fun appVersion() = packageManager.getPackageInfo(packageName, 0).versionName
 
     private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     private fun lp(top: Int = 0) = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         .apply { topMargin = dp(top) }
+
+    private companion object {
+        const val GUTTER = 16
+        const val RADIUS_CARD = 16
+        const val RADIUS_INSET = 12
+        const val RADIUS_BUTTON = 8
+    }
 }

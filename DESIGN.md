@@ -1,254 +1,180 @@
 ---
 name: Reels Blocker
-description: A calm control screen in Eido's cream-and-brown language; status and counter first, everything else set back.
+description: Instagram's visual language (white/black, hairlines, compact rows, bold titles) with an identity of its own: an Ember-to-Raspberry gradient reserved for the brand and the counter.
 colors:
-  bg: "#FAF9F2"
-  surface: "#F1F0E7"
-  surface-high: "#EAE6DC"
-  line: "#E1DDCF"
-  ink: "#3B352B"
-  ink-soft: "#70614B"
-  ink-mute: "#8C795E"
-  on-ink: "#FAF9F2"
-  ok: "#2A7948"
-  warn: "#B45A1A"
-  warn-bg: "#FFF4EB"
-  bg-night: "#121211"
-  surface-night: "#1B1A17"
-  surface-high-night: "#24231F"
-  line-night: "#2D2B27"
-  ink-night: "#E6E2DB"
-  ink-soft-night: "#BDB6AD"
-  ink-mute-night: "#928C84"
-  on-ink-night: "#121211"
-  ok-night: "#84D3A2"
-  warn-night: "#FDAD74"
-  warn-bg-night: "#2A2018"
+  bg: "#FFFFFF"
+  surface: "#F4F4F5"
+  surface-high: "#EBEBED"
+  line: "#E4E4E7"
+  ink: "#0B0B0C"
+  ink-soft: "#6B6B70"
+  ink-mute: "#8E8E93"
+  press: "#14000000"
+  accent: "#2563EB"
+  on-accent: "#FFFFFF"
+  brand-start: "#F2552C"
+  brand-end: "#D61F69"
+  ok: "#16A34A"
+  warn: "#EA580C"
+  warn-bg: "#FFF4ED"
+  switch-off: "#D4D4D8"
+  switch-thumb: "#FFFFFF"
+  bg-night: "#000000"
+  surface-night: "#121212"
+  surface-high-night: "#1F1F1F"
+  line-night: "#262626"
+  ink-night: "#F5F5F5"
+  ink-soft-night: "#A3A3A8"
+  ink-mute-night: "#6B6B70"
+  press-night: "#1FFFFFFF"
+  ok-night: "#4ADE80"
+  warn-night: "#FB923C"
+  warn-bg-night: "#1F140C"
+  switch-off-night: "#3F3F46"
 typography:
-  display:
-    fontFamily: "Outfit"
-    fontSize: "72sp"
-    fontWeight: 600
-    letterSpacing: "-0.03em"
-    fontFeature: "tnum"
-  headline:
-    fontFamily: "Outfit"
-    fontSize: "22sp"
-    fontWeight: 500
-  title:
-    fontFamily: "Outfit"
-    fontSize: "18sp"
-    fontWeight: 500
-  title-row:
-    fontFamily: "Outfit"
-    fontSize: "16sp"
-    fontWeight: 500
-  body-lead:
-    fontFamily: "Outfit"
-    fontSize: "16sp"
-    fontWeight: 400
-  body:
-    fontFamily: "Outfit"
-    fontSize: "14sp"
-    fontWeight: 400
-  label:
-    fontFamily: "Outfit"
-    fontSize: "14sp"
-    fontWeight: 500
-  caption:
-    fontFamily: "Outfit"
-    fontSize: "13sp"
-    fontWeight: 400
-  mono:
-    fontFamily: "monospace"
-    fontSize: "12sp"
-    fontWeight: 400
+  display: { fontFamily: "sans-serif", fontSize: "72sp", fontWeight: 700, letterSpacing: "-0.03em", fontFeature: "tnum" }
+  title-bar: { fontFamily: "sans-serif", fontSize: "22sp", fontWeight: 700 }
+  card-title: { fontFamily: "sans-serif", fontSize: "17sp", fontWeight: 700 }
+  section: { fontFamily: "sans-serif", fontSize: "16sp", fontWeight: 700 }
+  row-title: { fontFamily: "sans-serif", fontSize: "15sp", fontWeight: 500 }
+  stat-label: { fontFamily: "sans-serif", fontSize: "15sp", fontWeight: 500 }
+  body: { fontFamily: "sans-serif", fontSize: "14sp", fontWeight: 400 }
+  button: { fontFamily: "sans-serif", fontSize: "14sp", fontWeight: 700 }
+  caption: { fontFamily: "sans-serif", fontSize: "13sp", fontWeight: 400 }
+  footer: { fontFamily: "sans-serif", fontSize: "12sp", fontWeight: 400 }
+  mono: { fontFamily: "monospace", fontSize: "12sp", fontWeight: 400 }
 rounded:
-  inset: "16dp"
-  pill: "20dp"
-  card: "28dp"
+  button: "8dp"
+  inset: "12dp"
+  card: "16dp"
   full: "9999dp"
 spacing:
-  xs: "4dp"
-  sm: "8dp"
-  md: "12dp"
   gutter: "16dp"
-  card-x: "24dp"
-  section: "32dp"
-components:
-  card:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.card}"
-    padding: "20dp 24dp 24dp"
-  card-setup:
-    backgroundColor: "{colors.warn-bg}"
-    rounded: "{rounded.card}"
-    padding: "20dp 24dp 12dp"
-  button-pill:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "0 18dp"
-    height: "40dp"
-  toggle-on:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.bg}"
-    rounded: "{rounded.full}"
-    width: "52dp"
-    height: "32dp"
-  toggle-off:
-    backgroundColor: "{colors.surface-high}"
-    textColor: "{colors.ink-soft}"
-    rounded: "{rounded.full}"
-    width: "52dp"
-    height: "32dp"
-  setting-row:
-    typography: "{typography.title-row}"
-    padding: "12dp 20dp 12dp 24dp"
-    height: "76dp"
-  step-badge:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.on-ink}"
-    rounded: "{rounded.full}"
-    size: "28dp"
-  debug-inset:
-    backgroundColor: "{colors.surface-high}"
-    textColor: "{colors.ink-soft}"
-    typography: "{typography.mono}"
-    rounded: "{rounded.inset}"
-    padding: "14dp 16dp"
+  row-min: "64dp"
+  section-top: "20dp"
 ---
 
 # Design System: Reels Blocker
 
 ## Overview
 
-**Creative North Star: "The Quiet Ledger"**
+**North star: "Feels like Instagram's settings, but it's ours."**
 
-A single control screen that reads like a well-kept notebook page in Eido's language: warm cream paper, brown ink, one big number. The palette, the Outfit typeface and the 28dp card silhouette are inherited from the author's other app, Eido (palette source: `Eido/packages/ui-core/components/gluestack-ui-provider/config.ts`, light and dark modes); each Android color resource carries a comment naming the Eido scale step it came from (e.g. `bg` = background-900, `ink` = primary-0). New surfaces should keep that lineage rather than drift toward Material defaults.
+People open Reels Blocker straight from Instagram, so the app borrows Instagram's *language* to feel familiar: white (or true black) surfaces, full-bleed hairlines between sections, compact rows, bold section titles, a bright blue for actions, and black-and-white switches. What it does **not** borrow is Instagram's *identity*: no Instagram Sans, no logo or icons, no purple-pink-orange gradient. Our own signature is a two-stop **Ember → Raspberry** gradient, used in exactly two places: the brand tile and the avoided-Reels counter.
 
-The screen is flat and tonal. Content sits on cream, grouped into soft-cornered surface cards; hierarchy comes from size and ink weight, not from color or depth. Color carries meaning only for state: green when protection runs, orange when it is cut, with the setup card tinting warm when action is needed. Everything else is a brown-on-cream ramp. The voice is French, sentence case, short.
+The screen is a single scrolling column:
 
-Density is relaxed: generous 24dp card insets, 64-76dp row heights, 32dp breathing room above section labels. The one moment of motion that carries meaning is the counter climbing from the last-seen value.
+1. Top bar: brand tile + "Reels Blocker".
+2. Hero: status chip, the gradient counter, its label and the "+N since your last visit" line.
+3. Setup card (only when the service is off).
+4. Blocking settings, recent activity, advanced, footer; separated by full-bleed hairlines.
 
-**Key Characteristics:**
-- Eido lineage: cream paper, brown ink, Outfit, 28dp cards.
-- Flat tonal layering; no shadows anywhere.
-- One display number per screen, tabular figures.
-- Green/orange reserved for state.
-- Full light and dark parity through `values` / `values-night` resources.
+**Key characteristics**
+- Neutral canvas; color carries meaning, never decoration.
+- One gradient, two uses.
+- Flat: no shadows, no elevation.
+- System sans-serif: zero bytes in the APK, native on every phone.
+- Full light and dark parity via `values/colors.xml` and `values-night/colors.xml`.
 
 ## Colors
 
-A warm, low-chroma brown-on-cream ramp with two state hues borrowed from Eido.
+### Neutrals
+- **bg**: window background. White in light, true black in dark (OLED-friendly, like Instagram's dark mode).
+- **surface**: the debug inset. **surface-high**: secondary button fill.
+- **line**: hairlines and the status chip outline.
+- **ink**: primary text, the on switch track, step number outline.
+- **ink-soft**: secondary text (subtitles, timestamps, footer). 5.3:1 on white.
+- **ink-mute**: paused status dot only.
+- **press**: ripple color (8% black / 12% white).
 
-### Primary
-- **Walnut Ink** (`ink`): the primary text color, the filled pill button, the on-toggle track, the numbered step badge and the brand mark. In dark mode it inverts to **Bone** (`ink-night`), so filled controls become light-on-dark.
+### Action
+- **accent** (Signal Blue): filled primary buttons only ("Open"). White label at 5.2:1. Never used for text links or decoration.
 
-### Neutral
-- **Eido Cream** (`bg`): window background, status-bar scrim, and the toggle thumb when on. Also the launcher icon background.
-- **Linen** (`surface`): every grouping card.
-- **Oat** (`surface-high`): the off-toggle track and the debug inset; one step above surface.
-- **Seam** (`line`): 1px dividers inset 24dp, and the ripple color for rows.
-- **Umber** (`ink-soft`): secondary text, section labels, timestamps, toggle outline and off-thumb, chevrons.
-- **Faded Umber** (`ink-mute`): the paused-state status dot only.
-- **On Ink** (`on-ink`): text on filled ink controls.
+### Brand
+- **brand-start → brand-end** (Ember `#F2552C` → Raspberry `#D61F69`): the brand tile, the launcher icon and the counter. Both ends pass 3:1 for large text on white and on black.
 
-### Tertiary (state)
-- **Eido Green** (`ok`): the status dot when protection is active. Nowhere else.
-- **Ember** (`warn`): the status dot when protection is cut.
-- **Peach Wash** (`warn-bg`): background of the setup card that leads the screen when the service is off.
+### State
+- **ok** green: status dot when protection runs. **warn** orange: status dot when the service is off. **warn-bg**: the setup card.
 
-### Named Rules
-**The State-Only Color Rule.** Green and orange appear only as status signals (an 8dp dot, the setup card wash). Never as decoration, buttons, or links.
-
-**The Eido Provenance Rule.** Every color is a named step of Eido's gluestack palette; add new colors by taking the next Eido step, with a comment naming it, never by inventing a hex.
+### Rules
+- **The Two-Places Gradient Rule.** The gradient appears on the brand tile/icon and the counter, nowhere else. No gradient buttons, borders, or backgrounds.
+- **The State-Only Color Rule.** Green and orange appear only as status signals.
+- **The Blue-Means-Do Rule.** Accent blue is reserved for the primary action on screen.
 
 ## Typography
 
-**Display Font:** Outfit SemiBold (bundled `res/font/outfit_semibold.ttf`)
-**Body Font:** Outfit Regular and Medium (bundled)
-**Label/Mono Font:** system monospace, debug dump only
+System `sans-serif` (Roboto on most devices) in three weights: 400, 500, 700. Hierarchy comes from weight and size, never from color or case.
 
-**Character:** One geometric sans in three weights; hierarchy comes from size jumps and Medium versus Regular, never from color or case.
+| Role | Size / weight | Used for |
+|---|---|---|
+| Display | 72sp / 700, -0.03em, tabular | The counter (gradient fill) |
+| Title bar | 22sp / 700 | App name |
+| Card title | 17sp / 700 | "Turn on protection" |
+| Section | 16sp / 700 | "Blocking", "Recent activity", "Advanced" |
+| Row title / stat label | 15sp / 500 | Setting and link titles, "Reels avoided" |
+| Body | 14sp / 400 | Log lines, setup explanation |
+| Button | 14sp / 700 | Button labels |
+| Caption | 13sp / 400 | Row subtitles, status chip, counter delta |
+| Footer | 12sp / 400 | Privacy line and version |
 
-### Hierarchy
-- **Display** (600, 72sp, -0.03 tracking, tabular figures): the blocked-Reels counter. One per screen.
-- **Headline** (500, 22sp): the app bar title beside the mark.
-- **Title** (500, 18sp): card titles that demand action ("Active la protection").
-- **Row title** (500, 16sp): setting, step and link row titles; the "Avancé" header.
-- **Body lead** (400, 16sp): the counter caption.
-- **Body** (400, 14sp): row subtitles, log lines, setup explanation. Log timestamps use tabular figures in an aligned column.
-- **Label** (500, 14sp, sentence case, `ink-soft`): section labels above cards, status text, the counter delta, pill button text.
-- **Caption** (400, 13sp, centered): the footer privacy line with version.
-
-### Named Rules
-**The Sentence Case Rule.** No uppercase, no letterspaced labels. Section labels are plain sentence-case 14sp Medium in Umber.
-
-**The Tabular Number Rule.** Any changing number (counter, timestamps) uses `tnum` so values do not jitter as they animate or align.
+- **Sentence case everywhere.** No all-caps labels.
+- **Tabular figures** on anything that changes (counter, timestamps).
 
 ## Layout
 
-A single scrolling column with 16dp side gutters, edge-to-edge under transparent system bars; system insets are added to the column padding and a `bg`-colored scrim covers the status bar. Cards span the column. Inside cards, content is inset 24dp horizontally (20dp on the trailing side of rows that end in a control). Rhythm: 8dp between stacked cards at the top, 32dp above a section label and 10dp below it, 32dp before the Advanced card, 24dp before the footer. Rows hold a minimum of 64dp (header, collapsible), 72dp (step, link) or 76dp (setting with toggle). Every touch target is at least 48dp, wrapping smaller visual controls (40dp pills, 32dp toggle track) in padding. Text scales with system font size; the layout reflows rather than clipping (verified at 130%).
-
-Priority is expressed by order and dimming: when the service is off, the setup card moves to the top and the settings and log blocks drop to 45% opacity and become disabled.
-
-## Elevation & Depth
-
-Flat. No shadows or elevation on any element. Depth is tonal only: cream background, Linen cards, Oat insets, each one step apart. Press feedback is a ripple in `line` on rows and a translucent white ripple on ink pills; theme `colorControlHighlight` is 8% black (light) or 12% white (dark).
-
-### Named Rules
-**The Paper-Flat Rule.** Surfaces separate by tone, never by shadow. If a new layer is needed, take the next Eido step.
-
-## Shapes
-
-Soft, generous corners. Cards round at 28dp; pills round at 20dp (fully round at 40dp height); insets at 16dp; dots, badges and toggle tracks are fully round. The brand mark is a rounded-join play triangle struck through by a round-capped bar, with a background-colored gap around the bar; round caps echo the blades of Eido's pinwheel. Dividers are 1px hairlines inset to the card's text edge. Icons are stroked vectors with round caps and joins (2px chevron).
+- Full-bleed column; every row carries its own 16dp horizontal gutter so ripples and hairlines reach the screen edges.
+- Rows: 64dp minimum (setting, link, step), 56dp (Advanced header).
+- Section title: 20dp above, 8dp below.
+- Sections are separated by a 1px full-bleed `line`.
+- Edge-to-edge under transparent system bars; insets are added to the column, a `bg` scrim covers the status bar.
+- Touch targets are at least 48dp (switch and buttons are wrapped in padding).
+- While the service is off, settings and log fade to 45% and are disabled; the setup card leads.
 
 ## Components
 
-### Buttons
-- **Shape:** pill (20dp radius), 40dp visual height, 88dp minimum width, inside a 48dp touch frame.
-- **Primary:** Walnut Ink fill, On Ink 14sp Medium label, 18dp horizontal padding.
-- **Press:** ripple over the fill. There is no secondary button style; rows themselves are the secondary action.
+### Brand tile
+The launcher icon in miniature: a rounded square (radius 26% of the side) filled with the brand gradient, carrying a white "play" triangle struck through by a round-capped bar. The gap around the bar is drawn with the same gradient so it reads as a cut-out. 30dp in the top bar.
 
-### Cards / Containers
-- **Corner Style:** 28dp.
-- **Background:** Linen; Peach Wash for the setup card only.
-- **Shadow Strategy:** none (see Elevation).
-- **Border:** none; internal 1px Seam dividers between rows.
-- **Internal Padding:** 24dp horizontal; rows carry their own vertical padding.
-
-### Toggle (signature)
-Hand-drawn Material 3 style switch. Track 52 by 32dp, fully round. Off: Oat track, 2dp Umber outline, 16dp Umber thumb. On: Walnut Ink track, 24dp Cream thumb. Thumb grows and slides over 160ms decelerate. Announced to TalkBack as a standard Switch. The whole row toggles it.
-
-### List rows
-- **Setting row:** title + subtitle left, toggle right, 76dp min.
-- **Link row:** title + subtitle left, chevron rotated -90 right, 72dp min.
-- **Step row:** 28dp ink circle with SemiBold number, title + subtitle, pill button.
-- **Log row:** timestamp column (Umber, tabular, width of the widest stamp + 16dp) then Walnut sentence; 10dp vertical padding.
-
-### Status line
-8dp round dot in the state color followed by 14sp Medium Umber text ("Protection active", "En pause", "Protection coupée").
-
-### Collapsible section
-"Avancé" header row, 64dp, chevron rotates 180 degrees over 200ms; body animates in with LayoutTransition.
+### Status chip
+Pill, 32dp tall, 1dp `line` outline, 8dp state dot + 13sp/500 ink text ("Protection on", "Paused", "Protection off").
 
 ### Counter (signature)
-Display-sized number that counts up from the last-seen value over 700ms, decelerate(2), honoring the system animator scale; a Label-styled "+N depuis ta dernière visite" appears beneath it only when N is positive.
+72sp bold tabular number filled with the brand gradient, measured on the glyphs so even "3" shows both ends. Counts up from the last-seen value over 700ms (decelerate 2). Below: "Reels avoided" (15sp/500 ink) and, when positive, "+N since your last visit" (13sp ink-soft).
+
+### Setup card
+`warn-bg`, 16dp corners, 16dp padding. Bold title, subtitle, then numbered steps: 26dp outlined number circle, title + subtitle, primary "Open" button.
+
+### Buttons
+8dp corners, 36dp visual height inside a 48dp frame, 16dp horizontal padding, 14sp bold.
+- **Primary:** `accent` fill, `on-accent` label.
+- **Secondary:** `surface-high` fill, `ink` label (used for "Copy report").
+
+### Switch
+44×26dp track, 22dp thumb, 160ms decelerate. Off: `switch-off` track, white thumb. On: `ink` track, `bg` thumb (black on white in light, white on black in dark). The whole row toggles it; TalkBack announces a standard Switch.
+
+### Rows
+- **Setting row:** title + subtitle, switch on the right.
+- **Link row:** title + subtitle, chevron rotated -90°.
+- **Log row:** time column (ink-soft, tabular, width of the widest stamp + 16dp) then the message in ink.
+
+### Hold button (pause)
+Secondary-styled (surface-high, 8dp corners, 40dp tall). Pressing starts a fill in 15% ink that sweeps left to right over 1.5s; releasing early eases it back out; completing gives a haptic tick and pauses. TalkBack and switch access activate it with a normal click. When paused, it is replaced by a primary "Resume now" button, and the status chip reads "Paused until 14:37".
+
+### Onboarding
+One full-screen page per step: step counter and "Skip" on top, 26sp bold title, 16sp body, an optional `surface` note for edge cases (restricted settings), and full-width 52dp buttons pinned to the bottom (primary accent, secondary text). A step that Android reports as done shows a green "✓ Done" and its primary button becomes "Next".
+
+### Advanced section
+56dp header with a chevron that rotates 180° over 200ms; the body animates in with `LayoutTransition`.
 
 ## Do's and Don'ts
 
-### Do:
-- **Do** take every new color from Eido's palette and note the step it maps to, in both `values` and `values-night`.
-- **Do** group content in Linen cards with 28dp corners and 24dp insets.
-- **Do** keep one 72sp tabular number as the screen's focal point.
-- **Do** keep touch targets at 48dp minimum even when the visual control is smaller.
-- **Do** dim and disable (45%) content that cannot work yet, and lead with the card that fixes it.
+**Do**
+- Add new colors as tokens in both `values/colors.xml` and `values-night/colors.xml`, and document them here.
+- Keep one display number per screen.
+- Keep touch targets ≥ 48dp and check light, dark and 130% font size.
 
-### Don't:
-- **Don't** add shadows or elevation; separate layers by tone.
-- **Don't** use green or orange outside status signals.
-- **Don't** use uppercase or tracked-out labels.
-- **Don't** reach for the purple wellbeing look or progress rings; this is a calm control screen, not a wellness tracker.
-- **Don't** introduce a second typeface for display; Outfit carries all roles.
+**Don't**
+- Use Instagram's logo, glyphs, Instagram Sans, or its multi-stop gradient. The app must never look like it is made by Meta.
+- Use the brand gradient anywhere but the brand tile/icon and the counter.
+- Add shadows, elevation, or a second typeface.
+- Use blue for anything but the primary action.

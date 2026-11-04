@@ -7,3 +7,8 @@ local.properties
 .impeccable/build/
 .DS_Store
 .kotlin/
+
+# Release signing (never commit)
+keystore.properties
+*.jks
+*.keystore
