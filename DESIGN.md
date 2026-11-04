@@ -157,6 +157,12 @@ Pill, 32dp tall, 1dp `line` outline, 8dp state dot + 13sp/500 ink text ("Protect
 - **Link row:** title + subtitle, chevron rotated -90°.
 - **Log row:** time column (ink-soft, tabular, width of the widest stamp + 16dp) then the message in ink.
 
+### Hold button (pause)
+Secondary-styled (surface-high, 8dp corners, 40dp tall). Pressing starts a fill in 15% ink that sweeps left to right over 1.5s; releasing early eases it back out; completing gives a haptic tick and pauses. TalkBack and switch access activate it with a normal click. When paused, it is replaced by a primary "Resume now" button, and the status chip reads "Paused until 14:37".
+
+### Onboarding
+One full-screen page per step: step counter and "Skip" on top, 26sp bold title, 16sp body, an optional `surface` note for edge cases (restricted settings), and full-width 52dp buttons pinned to the bottom (primary accent, secondary text). A step that Android reports as done shows a green "✓ Done" and its primary button becomes "Next".
+
 ### Advanced section
 56dp header with a chevron that rotates 180° over 200ms; the body animates in with `LayoutTransition`.
 

@@ -5,7 +5,6 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Typeface
@@ -49,6 +48,8 @@ class MainActivity : Activity() {
     private lateinit var statusText: TextView
     private lateinit var counter: GradientTextView
     private lateinit var counterDelta: TextView
+    private lateinit var pauseButton: HoldButton
+    private lateinit var resumeButton: View
     private lateinit var setupCard: View
     private lateinit var settingsBlock: View
     private lateinit var logBlock: View
@@ -60,9 +61,20 @@ class MainActivity : Activity() {
     private lateinit var debugText: TextView
 
     private var displayedCount = -1
+    private val refreshRunnable = Runnable { refresh() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!Prefs.onboarded(this)) {
+            // People upgrading from a version without onboarding are already set up: don't send them through it.
+            if (Protection.isServiceEnabled(this)) {
+                Prefs.setOnboarded(this, true)
+            } else {
+                startActivity(Intent(this, OnboardingActivity::class.java))
+                finish()
+                return
+            }
+        }
         goEdgeToEdge()
 
         // Full-bleed column: rows own their 16dp gutter so ripples and separators reach the edges.
@@ -127,7 +139,14 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        Watchdog.schedule(this)
+        if (Protection.isServiceEnabled(this)) Watchdog.cancelAlert(this)
         refresh()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        counter.removeCallbacks(refreshRunnable)
     }
 
     // ────────────────────────────── sections ──────────────────────────────
@@ -183,6 +202,24 @@ class MainActivity : Activity() {
             setPadding(0, dp(4), 0, 0)
         }
         addView(counterDelta)
+
+        // Pause: hold to confirm (deliberate friction), resume with a plain tap.
+        pauseButton = HoldButton(
+            context, bold,
+            fillColor = c(R.color.surface_high),
+            sweepColor = (c(R.color.ink) and 0x00FFFFFF) or 0x26000000,
+            textColor = c(R.color.ink),
+        ).apply {
+            text = getString(R.string.action_hold_to_pause, Protection.PAUSE_MINUTES)
+            onConfirm = { Protection.pause(context); refresh() }
+        }
+        addView(pauseButton, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(20)
+        })
+        resumeButton = button(getString(R.string.action_resume), primary = true) { Protection.resume(context); refresh() }
+        addView(resumeButton, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(14)
+        })
     }
 
     private fun setupCard() = LinearLayout(this).apply {
@@ -204,7 +241,7 @@ class MainActivity : Activity() {
     private fun settingsRows() = LinearLayout(this).apply {
         orientation = LinearLayout.VERTICAL
         blockSwitch = switchRow(this, getString(R.string.setting_block_reels_title), getString(R.string.setting_block_reels_subtitle), Prefs.enabled(context)) {
-            Prefs.setEnabled(context, it); refresh()
+            Prefs.setEnabled(context, it); PauseTile.refresh(context); refresh()
         }
         switchRow(this, getString(R.string.setting_block_dm_swipe_title), getString(R.string.setting_block_dm_swipe_subtitle), Prefs.blockDmSwipe(context)) {
             Prefs.setBlockDmSwipe(context, it)
@@ -231,6 +268,9 @@ class MainActivity : Activity() {
         advancedBody = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
+            addView(linkRow(getString(R.string.link_setup_title), getString(R.string.link_setup_subtitle)) {
+                startActivity(Intent(this@MainActivity, OnboardingActivity::class.java))
+            })
             addView(linkRow(getString(R.string.link_accessibility_title), getString(R.string.link_accessibility_subtitle)) {
                 startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
             })
@@ -265,14 +305,15 @@ class MainActivity : Activity() {
     // ────────────────────────────── state ──────────────────────────────
 
     private fun refresh() {
-        val service = isServiceEnabled()
-        val on = Prefs.enabled(this)
-        val (label, color) = when {
-            !service -> R.string.status_off to R.color.warn
-            !on -> R.string.status_paused to R.color.ink_mute
-            else -> R.string.status_active to R.color.ok
+        val state = Protection.state(this)
+        val service = state != Protection.State.SERVICE_OFF
+        val (label, color) = when (state) {
+            Protection.State.SERVICE_OFF -> getString(R.string.status_off) to R.color.warn
+            Protection.State.SWITCHED_OFF -> getString(R.string.status_paused) to R.color.ink_mute
+            Protection.State.PAUSED -> getString(R.string.status_paused_until, Protection.pausedUntilLabel(this)) to R.color.ink_mute
+            Protection.State.ACTIVE -> getString(R.string.status_active) to R.color.ok
         }
-        statusText.setText(label)
+        statusText.text = label
         statusDot.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(c(color)) }
         statusChip.background = GradientDrawable().apply {
             cornerRadius = dp(16).toFloat()
@@ -282,7 +323,14 @@ class MainActivity : Activity() {
         setupCard.visibility = if (service) View.GONE else View.VISIBLE
         // While the service is off, only setup matters: everything else fades and is disabled.
         listOf(settingsBlock, logBlock).forEach { setEnabledDeep(it, service); it.alpha = if (service) 1f else 0.45f }
-        blockSwitch.isChecked = on
+        blockSwitch.isChecked = Prefs.enabled(this)
+        pauseButton.visibility = if (state == Protection.State.ACTIVE) View.VISIBLE else View.GONE
+        resumeButton.visibility = if (state == Protection.State.PAUSED) View.VISIBLE else View.GONE
+        // Refresh by itself when a pause runs out while the screen is open.
+        counter.removeCallbacks(refreshRunnable)
+        if (state == Protection.State.PAUSED) {
+            counter.postDelayed(refreshRunnable, Prefs.pausedUntil(this) - System.currentTimeMillis() + 500)
+        }
 
         animateCounter(Prefs.blockedCount(this))
         if (!service) counterDelta.visibility = View.GONE
@@ -500,13 +548,6 @@ class MainActivity : Activity() {
 
     private fun openAppSettings() =
         startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
-
-    private fun isServiceEnabled(): Boolean {
-        val me = ComponentName(this, ReelsBlockerService::class.java)
-        val enabled = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES) ?: return false
-        // Android stores either the long or short form ("pkg/.Class") depending on the version: compare components.
-        return enabled.split(':').any { ComponentName.unflattenFromString(it) == me }
-    }
 
     private fun appVersion() = packageManager.getPackageInfo(packageName, 0).versionName
 

@@ -11,6 +11,11 @@ All notable changes to this project are documented here. The format follows [Kee
 - GitHub Actions: build on every pull request, signed release on `v*` tags.
 - Release signing from environment variables or an untracked `keystore.properties`.
 
+- First-run guided setup that checks each step (accessibility, battery, notifications).
+- Hold-to-pause for 5 minutes, with one-tap resume.
+- Quick Settings tile showing protection status.
+- Watchdog: a periodic check that notifies once if Android stopped the service.
+
 ### Changed
 - New design system: Instagram-like language (white/true black, hairlines, compact rows, bold titles, blue primary action) with an original Ember-to-Raspberry gradient on the brand tile and the counter. See DESIGN.md.
 - New launcher icon and in-app brand tile.

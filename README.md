@@ -26,6 +26,13 @@ Reels Blocker is a tiny, open-source Android app that cuts off the endless Reels
 
 A counter shows how many Reels you avoided, and a short log lists the latest decisions.
 
+Also included:
+
+- **Guided setup** on first launch, which checks each step for you.
+- **Hold to pause** for 5 minutes when you really need a Reel, so you don't turn the whole thing off and forget it.
+- **Quick Settings tile** to see at a glance whether protection runs, and resume a pause in one tap.
+- **A warning if it stops.** Some phones quietly kill background services; Reels Blocker checks a few times a day and notifies you once if protection is off.
+
 ## Why this one
 
 - **Nothing leaves your phone.** No internet permission, no ads, no analytics, no account.
@@ -54,7 +61,7 @@ Reels Blocker is an Android [AccessibilityService](https://developer.android.com
 
 ### Privacy
 
-The app has no `INTERNET` permission, so it physically cannot send anything. Settings, the counter and the log are stored in the app's private storage and are not included in Android backups. The optional diagnostic report stays on the phone until you copy it yourself.
+The app has no `INTERNET` permission, so it physically cannot send anything. The only permissions it asks for are notifications (optional, for the "protection stopped" warning) and *run at startup* (to keep that check scheduled after a reboot). Settings, the counter and the log are stored in the app's private storage and are not included in Android backups. The optional diagnostic report stays on the phone until you copy it yourself.
 
 ## When Instagram updates break detection
 

@@ -54,4 +54,40 @@
 
     <!-- Footer -->
     <string name="footer">Nothing leaves your phone · v%1$s</string>
+
+    <!-- Pause, tile, watchdog, onboarding -->
+    <string name="status_paused_until">Paused until %1$s</string>
+    <string name="action_hold_to_pause">Hold to pause %1$d min</string>
+    <string name="action_resume">Resume now</string>
+    <string name="log_paused">Paused for %1$d minutes</string>
+    <string name="log_resumed">Resumed</string>
+    <string name="tile_on">On</string>
+    <string name="notif_channel">Protection status</string>
+    <string name="notif_stopped_title">Reels Blocker stopped</string>
+    <string name="notif_stopped_text">Android turned protection off. Tap to turn it back on.</string>
+    <string name="link_setup_title">Setup guide</string>
+    <string name="link_setup_subtitle">Walk through the setup steps again</string>
+    <string name="onb_skip">Skip</string>
+    <string name="onb_step">Step %1$d of %2$d</string>
+    <string name="onb_welcome_title">Block Reels, keep Instagram</string>
+    <string name="onb_welcome_b1">The Reels tab sends you back to Home</string>
+    <string name="onb_welcome_b2">Reels from the feed and Explore close by themselves</string>
+    <string name="onb_welcome_b3">Reels your friends send in DMs stay watchable</string>
+    <string name="onb_welcome_b4">Nothing leaves your phone: no internet access, no tracking</string>
+    <string name="onb_start">Get started</string>
+    <string name="onb_a11y_title">Let Reels Blocker see Instagram</string>
+    <string name="onb_a11y_body">Android calls this an accessibility service. Reels Blocker only reads the names of Instagram\'s screens, never your messages, photos or videos.</string>
+    <string name="onb_a11y_how">Find “Reels Blocker” in the list (sometimes under “Downloaded apps”) and turn it on.</string>
+    <string name="onb_a11y_restricted">Switch greyed out? Android blocks this for apps installed outside the Play Store. Open App info, tap ⋮, then “Allow restricted settings”, and try again.</string>
+    <string name="onb_a11y_action">Open Accessibility settings</string>
+    <string name="onb_open_app_info">Open App info</string>
+    <string name="onb_later">Do it later</string>
+    <string name="onb_done">Done</string>
+    <string name="onb_next">Next</string>
+    <string name="onb_battery_title">Keep it running</string>
+    <string name="onb_battery_body">Some phones stop apps that run in the background, Xiaomi, Huawei and Samsung especially. In App info, set Battery to “Unrestricted” and, if you see it, turn on Autostart.</string>
+    <string name="onb_notif_title">Get warned if it stops</string>
+    <string name="onb_notif_body">If Android turns protection off, Reels Blocker can send you a notification to turn it back on. Nothing else, ever.</string>
+    <string name="onb_notif_action">Allow notifications</string>
+    <string name="onb_not_now">Not now</string>
 </resources>

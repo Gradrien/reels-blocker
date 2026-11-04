@@ -21,6 +21,13 @@ Les messages, les stories et les Reels qu'un ami t'envoie en DM restent accessib
 
 Un compteur montre combien de Reels tu as évités, et le journal liste les dernières décisions.
 
+Aussi :
+
+- **Installation guidée** au premier lancement, qui vérifie chaque étape pour toi.
+- **Pause de 5 minutes** en maintenant le bouton appuyé, pour ne pas tout couper et oublier de réactiver.
+- **Tuile des réglages rapides** pour voir l'état d'un coup d'œil et reprendre une pause d'un geste.
+- **Alerte si ça s'arrête** : certains téléphones tuent les services en arrière-plan ; Reels Blocker vérifie quelques fois par jour et te prévient une fois si la protection est coupée.
+
 ## Pourquoi
 
 - **Rien ne quitte ton téléphone** : pas de permission Internet, pas de pub, pas de tracker.

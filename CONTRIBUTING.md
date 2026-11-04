@@ -4,7 +4,7 @@ Thanks for helping. The project is small on purpose, so a few ground rules keep 
 
 ## Ground rules
 
-- **No new permissions.** In particular, never `INTERNET`. If a change seems to need one, open an issue first.
+- **No new permissions.** In particular, never `INTERNET`. The only ones today are `POST_NOTIFICATIONS` (optional "protection stopped" alert) and `RECEIVE_BOOT_COMPLETED` (keeps that check scheduled). If a change seems to need another, open an issue first.
 - **No dependencies.** The app uses the Android framework only (no AndroidX, no Compose, no libraries). This keeps the APK tiny and the code easy to audit.
 - **Fail safe.** When the service is unsure what is on screen, it must do nothing. Never add an action that could close Instagram or loop.
 - **Friends' Reels stay watchable.** Reels opened from a DM are allowed by design.
@@ -47,6 +47,11 @@ adb logcat -s ReelsBlocker  # what the service decides, live
 | `MainActivity.kt` | The single app screen, built in code |
 | `ToggleView.kt` | Custom switch component |
 | `Prefs.kt` | Settings, counter, log and diagnostic storage (SharedPreferences) |
+| `Protection.kt` | Overall state (service off / switched off / paused / active), pause and resume |
+| `OnboardingActivity.kt` | First-run guide, one screen per setup step |
+| `PauseTile.kt` | Quick Settings tile |
+| `Watchdog.kt` | Periodic check that the service still runs, and the alert |
+| `HoldButton.kt`, `GradientTextView.kt` | Hold-to-confirm button, gradient counter |
 | `res/values*/` | Colors, theme and strings (light, dark, translations) |
 | `DESIGN.md` / `PRODUCT.md` | Design system and product intent; read these before changing the UI |
 

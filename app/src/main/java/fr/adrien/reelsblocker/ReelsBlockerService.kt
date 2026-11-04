@@ -50,7 +50,20 @@ class ReelsBlockerService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Prefs.setDiag(this, "connected", clock())
+        Prefs.setServiceRunning(this, true)
+        PauseTile.refresh(this)
         Log.i(TAG, "Service connected")
+    }
+
+    override fun onUnbind(intent: android.content.Intent?): Boolean {
+        Prefs.setServiceRunning(this, false)
+        PauseTile.refresh(this)
+        return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        Prefs.setServiceRunning(this, false)
+        super.onDestroy()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -59,6 +72,7 @@ class ReelsBlockerService : AccessibilityService() {
         if (debug) diagEvent(pkg)
         if (pkg != IG_PACKAGE) return
         if (!Prefs.enabled(this)) return
+        if (Prefs.isPaused(this)) return // temporary pause chosen by the user
 
         val now = SystemClock.elapsedRealtime()
         if (now < pausedUntil) return
@@ -168,10 +182,8 @@ class ReelsBlockerService : AccessibilityService() {
 
     /** Log lines are stored already translated, in the language active when they happened. */
     private fun log(msgRes: Int) {
-        val msg = getString(msgRes)
-        Log.i(TAG, msg)
-        val stamp = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.ROOT).format(java.util.Date())
-        Prefs.appendLog(this, "$stamp $msg")
+        Log.i(TAG, getString(msgRes))
+        Prefs.logEvent(this, msgRes)
     }
 
     private fun clock() = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date())
