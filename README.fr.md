@@ -6,8 +6,10 @@ Une petite app Android qui bloque les Reels d'Instagram **sans bloquer Instagram
 Les messages, les stories et les Reels qu'un ami t'envoie en DM restent accessibles. Le fil infini de Reels, lui, n'est plus atteignable.
 
 <p>
-  <img src="docs/screenshot-light.png" width="260" alt="Écran principal, thème clair">
-  <img src="docs/screenshot-dark.png" width="260" alt="Écran principal, thème sombre">
+  <img src="docs/screenshot-onboarding.png" width="200" alt="Écran d'accueil">
+  <img src="docs/screenshot-setup.png" width="200" alt="Configuration guidée, étape 1">
+  <img src="docs/screenshot-light.png" width="200" alt="Écran principal, thème clair">
+  <img src="docs/screenshot-dark.png" width="200" alt="Écran principal, thème sombre">
 </p>
 
 ## Ce que ça fait
