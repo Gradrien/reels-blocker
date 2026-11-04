@@ -4,33 +4,29 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
-### Added
-- English UI, now the default; French translation follows the phone's language.
-- English documentation: README, contributing guide, code of conduct, security policy.
-- Issue and pull request templates, including a “Detection broke” template built around the diagnostic report.
-- GitHub Actions: build on every pull request, signed release on `v*` tags.
-- Release signing from environment variables or an untracked `keystore.properties`.
+## [1.0.0] - 2026-11-04
 
+First public release.
+
+### Features
+- Blocks the Reels tab (back to Home) and fullscreen Reels opened from the feed, Explore or a profile.
+- Keeps Reels sent in DMs watchable; optionally blocks swiping on from them.
 - First-run guided setup that checks each step (accessibility, battery, notifications).
 - Hold-to-pause for 5 minutes, with one-tap resume.
 - Quick Settings tile showing protection status.
 - Watchdog: a periodic check that notifies once if Android stopped the service.
+- Avoided-Reels counter, recent activity log, diagnostic mode.
+- Instagram-like design with its own Ember-to-Raspberry gradient, light and true-black dark themes. See DESIGN.md.
+- English UI by default; French follows the phone's language.
 
-### Changed
-- New design system: Instagram-like language (white/true black, hairlines, compact rows, bold titles, blue primary action) with an original Ember-to-Raspberry gradient on the brand tile and the counter. See DESIGN.md.
-- New launcher icon and in-app brand tile.
-- System font instead of the bundled Outfit typeface (smaller APK).
-- Code comments and the diagnostic report are in English.
-- `build.sh` runs with bash and reads `JAVA_HOME` / `ANDROID_HOME` from the environment.
+### Project
+- English documentation: README, contributing guide, code of conduct, security policy.
+- Issue and pull request templates, including a “Detection broke” template built around the diagnostic report.
+- GitHub Actions: build on every pull request, signed APK and checksum on `v*` tags.
+- Release signing from environment variables or an untracked `keystore.properties`.
 
 ### Note
-- The first release signed with the new release key cannot update an install signed with the debug key: uninstall the old app once, then install the new one.
+- If you sideloaded an earlier build (signed with a debug key), uninstall it once before installing this release.
 
-## [1.5] - 2026-11-02
-
-First public version.
-
-- Blocks the Reels tab (back to Home) and fullscreen Reels opened from the feed, Explore or a profile.
-- Keeps Reels sent in DMs watchable; optionally blocks swiping on from them.
-- Avoided-Reels counter, recent activity log, diagnostic mode.
-- Light and dark themes.
+[Unreleased]: https://github.com/Gradrien/reels-blocker/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Gradrien/reels-blocker/releases/tag/v1.0.0

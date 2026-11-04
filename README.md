@@ -9,8 +9,10 @@ Reels Blocker is a tiny, open-source Android app that cuts off the endless Reels
 ![Android 9+](https://img.shields.io/badge/Android-9%2B-3DDC84)
 
 <p>
-  <img src="docs/screenshot-light.png" width="260" alt="Main screen, light theme">
-  <img src="docs/screenshot-dark.png" width="260" alt="Main screen, dark theme">
+  <img src="docs/screenshot-onboarding.png" width="200" alt="Welcome screen">
+  <img src="docs/screenshot-setup.png" width="200" alt="Guided setup, step 1">
+  <img src="docs/screenshot-light.png" width="200" alt="Main screen, light theme">
+  <img src="docs/screenshot-dark.png" width="200" alt="Main screen, dark theme">
 </p>
 
 [Lire en français](README.fr.md)
